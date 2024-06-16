@@ -5,9 +5,10 @@ import {
     LineBasicMaterial,
     LineSegments,
     EdgesGeometry,
-    GridHelper,
 } from "three";
 import { scene } from "../setup";
+import Terrain from "./terrain";
+import Grid from "./grid";
 
 export const mapSize = 15;
 
@@ -26,17 +27,12 @@ export const mapConstraints = {
     },
 };
 
-function renderGrid() {
-    const grid = new GridHelper(mapSize, mapSize, 0x000000, 0x000000);
 
-    grid.position.x = xOrigin;
-    grid.position.z = zOrigin;
-    grid.position.y = yOrigin - 0.5;
 
-    scene.add(grid);
-}
-
-export function renderMap() {
+/** 
+ * @param {number} seed
+ * **/
+export function renderMap(seed = Math.random()) {
     const geometry = new BoxGeometry(mapSize, 1, mapSize);
     const material = new MeshBasicMaterial({ color: "green" });
     const map = new Mesh(geometry, material);
@@ -54,7 +50,11 @@ export function renderMap() {
     edgesMap.position.z = zOrigin;
     edgesMap.position.y = yOrigin - 1;
 
-    renderGrid();
+    const grid = new Grid(mapSize);
+    grid.render();
+
+    const terrain = new Terrain(mapSize)
+    terrain.render(seed);
 
     scene.add(map);
     scene.add(edgesMap);
