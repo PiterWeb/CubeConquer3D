@@ -1,6 +1,7 @@
 import { OrthographicCamera } from "three";
 import { mapSize, zOrigin, xOrigin } from "./map/map.js";
 import { Tween } from "@tweenjs/tween.js";
+import Debouncer from "./debouncer.js";
 
 function setupCamera() {
     const aspect = window.innerWidth / window.innerHeight;
@@ -33,49 +34,53 @@ export default setupCamera;
  * @param {OrthographicCamera} camera
  * **/
 function setupCameraRotation(camera) {
+    const rotationDebouncer = new Debouncer();
+
     document.addEventListener("click", (e) => {
-        e.stopPropagation();
-        e.preventDefault();
+        rotationDebouncer.debounce(() => {
+            e.stopPropagation();
+            e.preventDefault();
 
-        const rotation = Rotation.getRotation();
+            const rotation = Rotation.getRotation();
 
-        if (rotation == 0) {
-            new Tween({ z: camera.position.z })
-                .to({ z: camera.position.z - mapSize }, 1000)
-                .onUpdate((object) => {
-                    camera.position.z = object.z;
-                    camera.lookAt(xOrigin, 0, zOrigin);
-                })
-                .start();
-        } else if (rotation == 1) {
-            new Tween({ x: camera.position.x })
-                .to({ x: camera.position.x - mapSize }, 1000)
-                .onUpdate((object) => {
-                    camera.position.x = object.x;
-                    camera.lookAt(xOrigin, 0, zOrigin);
-                })
-                .start();
-        } else if (rotation == 2) {
-            new Tween({ z: camera.position.z })
-                .to({ z: camera.position.z + mapSize }, 1000)
-                .onUpdate((object) => {
-                    camera.position.z = object.z;
-                    camera.lookAt(xOrigin, 0, zOrigin);
-                })
-                .start();
-        } else if (rotation == 3) {
-            new Tween({ x: camera.position.x })
-                .to({ x: camera.position.x + mapSize }, 1000)
-                .onUpdate((object) => {
-                    camera.position.x = object.x;
-                    camera.lookAt(xOrigin, 0, zOrigin);
-                })
-                .start();
+            if (rotation == 0) {
+                new Tween({ z: camera.position.z })
+                    .to({ z: camera.position.z - mapSize }, 750)
+                    .onUpdate((object) => {
+                        camera.position.z = object.z;
+                        camera.lookAt(xOrigin, 0, zOrigin);
+                    })
+                    .start();
+            } else if (rotation == 1) {
+                new Tween({ x: camera.position.x })
+                    .to({ x: camera.position.x - mapSize }, 750)
+                    .onUpdate((object) => {
+                        camera.position.x = object.x;
+                        camera.lookAt(xOrigin, 0, zOrigin);
+                    })
+                    .start();
+            } else if (rotation == 2) {
+                new Tween({ z: camera.position.z })
+                    .to({ z: camera.position.z + mapSize }, 750)
+                    .onUpdate((object) => {
+                        camera.position.z = object.z;
+                        camera.lookAt(xOrigin, 0, zOrigin);
+                    })
+                    .start();
+            } else if (rotation == 3) {
+                new Tween({ x: camera.position.x })
+                    .to({ x: camera.position.x + mapSize }, 750)
+                    .onUpdate((object) => {
+                        camera.position.x = object.x;
+                        camera.lookAt(xOrigin, 0, zOrigin);
+                    })
+                    .start();
 
-            Rotation.setRotation(-1);
-        }
+                Rotation.setRotation(-1);
+            }
 
-        Rotation.incrementRotation();
+            Rotation.incrementRotation();
+        }, 500);
     });
 }
 
@@ -94,5 +99,26 @@ export class Rotation {
 
     static incrementRotation() {
         this.#rotation += 1;
+    }
+
+    /**
+     *
+     * Get direction based on the current rotation
+     *
+     * @param {'up' | 'down' | 'left' | 'right'} normalDirection
+     * **/
+    static getDirection(normalDirection) {
+        switch (normalDirection) {
+            case "up":
+                return ["up", "left", "down", "right"][this.#rotation];
+            case "down":
+                return ["down", "right", "up", "left"][this.#rotation];
+            case "left":
+                return ["left", "down", "right", "up"][this.#rotation];
+            case "right":
+                return ["right", "up", "left", "down"][this.#rotation];
+            default:
+                throw new Error("Invalid direction");
+        }
     }
 }
