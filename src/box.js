@@ -11,6 +11,7 @@ import { xOrigin, zOrigin, yOrigin, mapConstraints } from "./map/map";
 import Tween from "@tweenjs/tween.js";
 import Debouncer from "./debouncer";
 import { roleColors } from "./player/role";
+import { Rotation } from "./camera";
 
 /**
  *  Render a box in the scene
@@ -60,6 +61,8 @@ const animationDuration = 150;
  * **/
 function animateMove(box, dir) {
     if (dir === "up") {
+        if (box.position.z <= mapConstraints.z.min) return;
+
         new Tween.Tween({ x_rotation: box.rotation.x, z: box.position.z })
             .to(
                 {
@@ -80,6 +83,7 @@ function animateMove(box, dir) {
     }
 
     if (dir === "down") {
+        if (box.position.z >= mapConstraints.z.max) return;
         new Tween.Tween({ x_rotation: box.rotation.x, z: box.position.z })
             .to(
                 {
@@ -100,6 +104,7 @@ function animateMove(box, dir) {
     }
 
     if (dir === "left") {
+        if (box.position.x <= mapConstraints.x.min) return;
         new Tween.Tween({ z_rotation: box.rotation.z, x: box.position.x })
             .to(
                 {
@@ -120,6 +125,8 @@ function animateMove(box, dir) {
     }
 
     if (dir === "right") {
+        if (box.position.x >= mapConstraints.x.max) return;
+
         new Tween.Tween({ z_rotation: box.rotation.z, x: box.position.x })
             .to(
                 {
@@ -145,12 +152,22 @@ function animateMove(box, dir) {
  * @param {Mesh} box
  * **/
 export function controllBox(box) {
+    const geometry = new BoxGeometry(1, 1, 1);
+    const material = new MeshBasicMaterial({
+        color: box.userData.team,
+        opacity: 0.5,
+        transparent: true,
+    });
+    const tempBox = new Mesh(geometry, material);
+    tempBox.position.set(box.position.x, box.position.y, box.position.z);
 
-    let tempBox = new Mesh()
+    const tempEdges = new EdgesGeometry(geometry);
+    const line = new LineBasicMaterial({
+        color: roleColors[box.userData.role],
+    });
+    const tempBoxEdges = new LineSegments(tempEdges, line);
 
-    tempBox.copy(box);
-
-    tempBox.material.setValues({ opacity: 0.5, transparent: true });
+    tempBox.add(tempBoxEdges);
 
     scene.add(tempBox);
 
@@ -163,25 +180,21 @@ export function controllBox(box) {
     function move(event) {
         actionDebouncer.debounce(() => {
             if (event.key === "w") {
-                if (box.position.z <= mapConstraints.z.min) return;
-                animateMove(tempBox, "up");
+                animateMove(tempBox, Rotation.getDirection("up"));
                 return;
             }
             if (event.key === "s") {
-                if (box.position.z >= mapConstraints.z.max) return;
-                animateMove(tempBox, "down");
+                animateMove(tempBox, Rotation.getDirection("down"));
                 return;
             }
 
             if (event.key === "a") {
-                if (box.position.x <= mapConstraints.x.min) return;
-                animateMove(tempBox, "left");
+                animateMove(tempBox, Rotation.getDirection("left"));
                 return;
             }
 
             if (event.key === "d") {
-                if (box.position.x >= mapConstraints.x.max) return;
-                animateMove(tempBox, "right");
+                animateMove(tempBox, Rotation.getDirection("right"));
                 return;
             }
         }, animationDuration);
@@ -193,6 +206,7 @@ export function controllBox(box) {
      * @param {KeyboardEvent} event
      * **/
     function confirmMovement(event) {
+        // Spacebar
         if (event.key === " ") {
             box.position.set(
                 tempBox.position.x,
@@ -205,6 +219,6 @@ export function controllBox(box) {
         }
     }
 
-    // Detect spacebar
+    // Detect spacebar to confirm the movement
     window.addEventListener("keydown", confirmMovement);
 }
