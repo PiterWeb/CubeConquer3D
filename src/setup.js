@@ -33,8 +33,8 @@ export default function main() {
 
     renderer.setAnimationLoop(animate);
 
-    // Applying blur to the canvas
+    // Applying blur & brightness to the canvas
     const canvas = document.querySelector("canvas");
-    canvas.style.filter = "blur(1px)";
+    // canvas.style.filter = "blur(1px)";
     canvas.style.filter += " brightness(1.5)";
 }
