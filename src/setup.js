@@ -1,4 +1,4 @@
-import { Scene, WebGLRenderer, AmbientLight } from "three";
+import { Scene, WebGLRenderer } from "three";
 import { controllBox, renderBox as renderPlayerBox } from "./box.js";
 import { renderMap } from "./map/map.js";
 import setupCamera from "./camera.js";
@@ -18,7 +18,9 @@ export default function main() {
 
     document.body.appendChild(renderer.domElement);
 
-    renderMap();
+    const terrain = renderMap();
+    console.log("Terrain", terrain.getMap());
+
     const box = renderPlayerBox("blue", "tank");
 
     // Control the box (one time only)
@@ -35,6 +37,6 @@ export default function main() {
 
     // Applying blur & brightness to the canvas
     const canvas = document.querySelector("canvas");
-    // canvas.style.filter = "blur(1px)";
-    canvas.style.filter += " brightness(1.5)";
+    canvas.style.filter = "blur(1px)";
+    // canvas.style.filter += " brightness(1.5)";
 }
