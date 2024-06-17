@@ -12,6 +12,9 @@ export default class Grid {
     render() {
         const grid = new GridHelper(this.#size, this.#size, 0x000000, 0x000000);
 
+        grid.material.linewidth = 3;
+        grid.material.opacity = 0.5;
+
         grid.position.x = xOrigin;
         grid.position.z = zOrigin;
         grid.position.y = yOrigin - 0.5;
