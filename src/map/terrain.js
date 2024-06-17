@@ -13,10 +13,22 @@ import {
 import "./perlin_noise.js";
 
 export default class Terrain {
+    /** @type {number} **/
     #size;
 
+    /** @type {number[][]} **/
+    #map;
+
+    /** @param {number} size **/
     constructor(size) {
         this.#size = size;
+        this.#map = new Array(size)
+            .fill()
+            .map(() => new Array(size).fill(yOrigin));
+    }
+
+    getMap() {
+        return this.#map;
     }
 
     /**
@@ -27,38 +39,49 @@ export default class Terrain {
 
         for (let i = 0; i < this.#size; i++) {
             for (let j = 0; j < this.#size; j++) {
+                const x = xOrigin + Math.floor(this.#size / 2) - i;
+                const z = zOrigin + Math.floor(this.#size / 2) - j;
+                const y = yOrigin + Terrain.randomY(i, j);
+
+                // Skip the cubes below the origin
+                if (y < yOrigin) continue;
+
+                // Update the map
+                this.#map[i][j] = y;
+
                 const geometry = new BoxGeometry(1, 1, 1);
                 const material = new MeshBasicMaterial({ color: "white" });
                 const cube = new Mesh(geometry, material);
 
-                const x = xOrigin + Math.floor(this.#size / 2) - i;
-                const z = zOrigin + Math.floor(this.#size / 2) - j;
-
                 cube.position.x = x;
                 cube.position.z = z;
-
-                const y = yOrigin + Terrain.randomY(i, j);
                 cube.position.y = y;
+
+                // Create the edges of the cube (can be reused for all cubes)
+                // angle parameter very low to avoid rendering issues (but not 0)
+                const edges = new EdgesGeometry(geometry, Math.exp(-10 ^ 11));
+                const line = new LineBasicMaterial({
+                    color: "black",
+                    linewidth: 3,
+                    precision: "highp",
+                });
+                const edgesCube = new LineSegments(edges, line);
 
                 // Generate Cubes below the current cube
                 for (let k = y; k >= 1; k--) {
                     const geometry = new BoxGeometry(1, 1, 1);
                     const material = new MeshBasicMaterial({ color: "white" });
-                    const cube = new Mesh(geometry, material);
+                    const belowCube = new Mesh(geometry, material);
 
-                    cube.position.x = x;
-                    cube.position.y = yOrigin + y - k;
-                    cube.position.z = z;
+                    belowCube.position.x = x;
+                    belowCube.position.y = yOrigin + y - k;
+                    belowCube.position.z = z;
 
-                    scene.add(cube);
+                    belowCube.add(edgesCube);
+                    scene.add(belowCube);
                 }
 
-                const edges = new EdgesGeometry(geometry);
-                const line = new LineBasicMaterial({ color: "black" });
-                const edgesCube = new LineSegments(edges, line);
-
                 cube.add(edgesCube);
-
                 scene.add(cube);
             }
         }
@@ -69,8 +92,12 @@ export default class Terrain {
      * @param {number} y
      *  **/
     static randomY(x, y) {
-        console.log(noise.perlin2(x / 10, y / 10));
+        // Generate a random number between -0.5 and 0.5
+        const noiseValue = noise.perlin2(x / 10, y / 10);
 
-        return Math.round(Math.abs(noise.perlin2(x / 10, y / 10) * 8) - 1);
+        // Round the number to the nearest integer between 0 and 4
+        const randomY = Math.round(Math.abs(noiseValue * 8) - 1);
+
+        return randomY;
     }
 }
