@@ -56,8 +56,9 @@ export function renderMap(seed = Math.random()) {
     const terrain = new Terrain(mapSize)
     terrain.render(seed);
 
+
     scene.add(map);
     scene.add(edgesMap);
 
-    return map;
+    return terrain;
 }
