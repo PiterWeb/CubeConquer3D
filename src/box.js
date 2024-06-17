@@ -39,7 +39,7 @@ export function renderBox(
 
     // Create the edges of the cube
     const edges = new EdgesGeometry(geometry);
-    const line = new LineBasicMaterial({ color: roleColors[role] });
+    const line = new LineBasicMaterial({ color: roleColors[role], linewidth: 3});
     const edgesCube = new LineSegments(edges, line);
 
     // Add the edges to the cube
