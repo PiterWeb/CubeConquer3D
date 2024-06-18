@@ -1,11 +1,12 @@
 import {
     BoxGeometry,
-    MeshBasicMaterial,
     Mesh,
     EdgesGeometry,
     LineBasicMaterial,
     LineSegments,
     Vector3,
+    MeshPhongMaterial,
+    MeshBasicMaterial,
 } from "three";
 import { scene } from "./setup";
 import { xOrigin, zOrigin, yOrigin, mapConstraints } from "./map/map";
@@ -34,7 +35,7 @@ export function renderBox(
     { x = xOrigin, y = yOrigin, z = zOrigin } = {}
 ) {
     const geometry = new BoxGeometry(1, 1, 1);
-    const material = new MeshBasicMaterial({
+    const material = new MeshPhongMaterial({
         color: team,
     });
     const cube = new Mesh(geometry, material);
@@ -198,7 +199,7 @@ function animateMove(box, dir) {
                 {
                     y: box.position.y + 1,
                 },
-                animationDuration
+                animationDuration / 2
             )
             .onUpdate((object) => {
                 box.position.y = object.y;
