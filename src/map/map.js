@@ -19,17 +19,15 @@ export const yOrigin = 0.5;
 export const mapConstraints = {
     x: {
         max: xOrigin + Math.round(mapSize / 2) - 1,
-        min: xOrigin - Math.round(mapSize/2) + 1,
+        min: xOrigin - Math.round(mapSize / 2) + 1,
     },
     z: {
         max: zOrigin + Math.round(mapSize / 2) - 1,
-        min: zOrigin - Math.round(mapSize/2) + 1,
+        min: zOrigin - Math.round(mapSize / 2) + 1,
     },
 };
 
-
-
-/** 
+/**
  * @param {number} seed
  * **/
 export function renderMap(seed = Math.random()) {
@@ -45,6 +43,7 @@ export function renderMap(seed = Math.random()) {
     map.position.x = xOrigin;
     map.position.z = zOrigin;
     map.position.y = yOrigin - 1;
+    map.name = "terrain";
 
     edgesMap.position.x = xOrigin;
     edgesMap.position.z = zOrigin;
@@ -53,9 +52,8 @@ export function renderMap(seed = Math.random()) {
     const grid = new Grid(mapSize);
     grid.render();
 
-    const terrain = new Terrain(mapSize)
+    const terrain = new Terrain(mapSize);
     terrain.render(seed);
-
 
     scene.add(map);
     scene.add(edgesMap);

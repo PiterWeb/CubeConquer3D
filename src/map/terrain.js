@@ -52,6 +52,7 @@ export default class Terrain {
                 const geometry = new BoxGeometry(1, 1, 1);
                 const material = new MeshBasicMaterial({ color: "white" });
                 const cube = new Mesh(geometry, material);
+                cube.name = "terrain";
 
                 cube.position.x = x;
                 cube.position.z = z;
@@ -76,6 +77,7 @@ export default class Terrain {
                     belowCube.position.x = x;
                     belowCube.position.y = yOrigin + y - k;
                     belowCube.position.z = z;
+                    // belowCube.name = "terrain";
 
                     belowCube.add(edgesCube);
                     scene.add(belowCube);
