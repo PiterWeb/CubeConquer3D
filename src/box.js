@@ -5,6 +5,7 @@ import {
     EdgesGeometry,
     LineBasicMaterial,
     LineSegments,
+    Vector3,
 } from "three";
 import { scene } from "./setup";
 import { xOrigin, zOrigin, yOrigin, mapConstraints } from "./map/map";
@@ -12,14 +13,21 @@ import Tween from "@tweenjs/tween.js";
 import Debouncer from "./debouncer";
 import { roleColors } from "./player/role";
 import { Rotation } from "./camera";
+import Raycast from "./player/raycast";
+/**
+ * @import Team from "./player/team"
+ * @import Role from "./player/role"
+ */
 
 /**
  *  Render a box in the scene
- *  @import Team from "./player/team"
- *  @import Role from "./player/role"
- *  @param {Team} team
- *  @param {Role} role
- * **/
+ *  @param {Team} team The team color
+ *  @param {Role} role The role of the player
+ *  @param {Object} position The position of the box
+ *  @param {number} position.x The x position of the box
+ *  @param {number} position.y The y position of the box
+ *  @param {number} position.z The z position of the box
+ **/
 export function renderBox(
     team = "blue",
     role = "dps",
@@ -39,7 +47,10 @@ export function renderBox(
 
     // Create the edges of the cube
     const edges = new EdgesGeometry(geometry);
-    const line = new LineBasicMaterial({ color: roleColors[role], linewidth: 3});
+    const line = new LineBasicMaterial({
+        color: roleColors[role],
+        linewidth: 3,
+    });
     const edgesCube = new LineSegments(edges, line);
 
     // Add the edges to the cube
@@ -54,14 +65,24 @@ const animationDuration = 150;
 
 /**
  *
- * Animate the box movement
+ * Animate the box movement in the scene
  *
- * @param {Mesh} box
- * @param {'up' | 'down' | 'left' | 'right'} dir
+ * @param {Mesh} box The box to animate
+ * @param {'up' | 'down' | 'left' | 'right' | 'climb' | 'fall'} dir The direction of the movement
  * **/
 function animateMove(box, dir) {
+    const boxRaycast = new Raycast(box);
+
     if (dir === "up") {
         if (box.position.z <= mapConstraints.z.min) return;
+
+        const direction = new Vector3(0, 0, -1);
+
+        if (boxRaycast.boxHaveToClimb(direction)) {
+            animateMove(box, "climb");
+        } else if (boxRaycast.boxHaveToFall(direction)) {
+            animateMove(box, "fall");
+        }
 
         new Tween.Tween({ x_rotation: box.rotation.x, z: box.position.z })
             .to(
@@ -84,6 +105,15 @@ function animateMove(box, dir) {
 
     if (dir === "down") {
         if (box.position.z >= mapConstraints.z.max) return;
+
+        const direction = new Vector3(0, 0, 1);
+
+        if (boxRaycast.boxHaveToClimb(direction)) {
+            animateMove(box, "climb");
+        } else if (boxRaycast.boxHaveToFall(direction)) {
+            animateMove(box, "fall");
+        }
+
         new Tween.Tween({ x_rotation: box.rotation.x, z: box.position.z })
             .to(
                 {
@@ -105,6 +135,15 @@ function animateMove(box, dir) {
 
     if (dir === "left") {
         if (box.position.x <= mapConstraints.x.min) return;
+
+        const direction = new Vector3(-1, 0, 0);
+
+        if (boxRaycast.boxHaveToClimb(direction)) {
+            animateMove(box, "climb");
+        } else if (boxRaycast.boxHaveToFall(direction)) {
+            animateMove(box, "fall");
+        }
+
         new Tween.Tween({ z_rotation: box.rotation.z, x: box.position.x })
             .to(
                 {
@@ -127,6 +166,14 @@ function animateMove(box, dir) {
     if (dir === "right") {
         if (box.position.x >= mapConstraints.x.max) return;
 
+        const direction = new Vector3(1, 0, 0);
+
+        if (boxRaycast.boxHaveToClimb(direction)) {
+            animateMove(box, "climb");
+        } else if (boxRaycast.boxHaveToFall(direction)) {
+            animateMove(box, "fall");
+        }
+
         new Tween.Tween({ z_rotation: box.rotation.z, x: box.position.x })
             .to(
                 {
@@ -144,12 +191,40 @@ function animateMove(box, dir) {
                 box.rotation.z = 0;
             });
     }
+
+    if (dir === "climb") {
+        new Tween.Tween({ y: box.position.y })
+            .to(
+                {
+                    y: box.position.y + 1,
+                },
+                animationDuration
+            )
+            .onUpdate((object) => {
+                box.position.y = object.y;
+            })
+            .start();
+    }
+
+    if (dir === "fall") {
+        if (box.position.y <= yOrigin) return;
+        new Tween.Tween({ y: box.position.y })
+            .to(
+                {
+                    y: box.position.y - 1,
+                },
+                animationDuration
+            )
+            .onUpdate((object) => {
+                box.position.y = object.y;
+            })
+            .start();
+    }
 }
 
 /**
- * Move the box with the keyboard
- *
- * @param {Mesh} box
+ * Move the box with the keyboard (WASD) and confirm the movement with the spacebar
+ * @param {Mesh} box The box to move
  * **/
 export function controllBox(box) {
     const geometry = new BoxGeometry(1, 1, 1);
@@ -168,8 +243,9 @@ export function controllBox(box) {
     const tempBoxEdges = new LineSegments(tempEdges, line);
 
     tempBox.add(tempBoxEdges);
-
     scene.add(tempBox);
+
+    // Create a raycaster to detect the tempbox position
 
     const actionDebouncer = new Debouncer();
 
