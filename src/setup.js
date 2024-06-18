@@ -1,4 +1,4 @@
-import { Scene, WebGLRenderer } from "three";
+import { Scene, WebGLRenderer} from "three";
 import { controllBox, renderBox as renderPlayerBox } from "./box.js";
 import { renderMap } from "./map/map.js";
 import setupCamera from "./camera.js";
@@ -7,8 +7,9 @@ import { update as tweenUpdate } from "@tweenjs/tween.js";
 export const scene = new Scene();
 
 export default function main() {
-    const renderer = new WebGLRenderer();
+    const renderer = new WebGLRenderer({ antialias: true });
 
+    renderer.shadowMap.enabled = true;
     renderer.setPixelRatio(window.devicePixelRatio / 2);
     renderer.setSize(window.innerWidth, window.innerHeight);
 
