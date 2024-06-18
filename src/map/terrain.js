@@ -2,7 +2,7 @@ import { scene } from "../setup";
 import { xOrigin, zOrigin, yOrigin } from "./map";
 import {
     BoxGeometry,
-    MeshBasicMaterial,
+    MeshPhongMaterial,
     Mesh,
     EdgesGeometry,
     LineBasicMaterial,
@@ -50,8 +50,9 @@ export default class Terrain {
                 this.#map[i][j] = y;
 
                 const geometry = new BoxGeometry(1, 1, 1);
-                const material = new MeshBasicMaterial({ color: "white" });
+                const material = new MeshPhongMaterial({ color: "white" });
                 const cube = new Mesh(geometry, material);
+                cube.castShadow = true;
                 cube.name = "terrain";
 
                 cube.position.x = x;
@@ -71,7 +72,7 @@ export default class Terrain {
                 // Generate Cubes below the current cube
                 for (let k = y; k >= 1; k--) {
                     const geometry = new BoxGeometry(1, 1, 1);
-                    const material = new MeshBasicMaterial({ color: "white" });
+                    const material = new MeshPhongMaterial({ color: "white" });
                     const belowCube = new Mesh(geometry, material);
 
                     belowCube.position.x = x;
