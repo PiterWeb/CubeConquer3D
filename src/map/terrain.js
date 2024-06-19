@@ -55,7 +55,7 @@ export default class Terrain {
             for (let j = 0; j < this.#size; j++) {
                 const x = xOrigin + Math.floor(this.#size / 2) - i;
                 const z = zOrigin + Math.floor(this.#size / 2) - j;
-                const y = yOrigin + Terrain.randomY(i, j);
+                const y = yOrigin + Terrain.#randomY(i, j);
 
                 // Skip the cubes below the origin
                 if (y < yOrigin) continue;
@@ -76,8 +76,7 @@ export default class Terrain {
                 cube.position.y = y;
 
                 // Create the edges of the cube (can be reused for all cubes)
-                // angle parameter very low to avoid rendering issues (but not 0)
-                const edges = new EdgesGeometry(geometry, Math.exp(-10 ^ 11));
+                const edges = new EdgesGeometry(geometry);
                 const line = new LineBasicMaterial({
                     color: "black",
                     linewidth: 3,
@@ -87,9 +86,16 @@ export default class Terrain {
 
                 // Generate Cubes below the current cube
                 for (let k = y; k >= 1; k--) {
+
+                    if (Terrain.#shouldBeACavity(x, yOrigin + y - k, z)) {
+                        Terrain.#decorateCave(x, yOrigin + y - k, z);
+                        // continue;
+                    }
+
                     const geometry = new BoxGeometry(1, 1, 1);
                     const material = new MeshPhongMaterial({ color: "white" });
                     const belowCube = new Mesh(geometry, material);
+                    const edgesCube = new LineSegments(edges, line);
 
                     belowCube.position.x = x;
                     belowCube.position.y = yOrigin + y - k;
@@ -111,15 +117,34 @@ export default class Terrain {
 
     /**
      * @param {number} x
-     * @param {number} y
+     * @param {number} z
      *  **/
-    static randomY(x, y) {
+    static #randomY(x, z) {
         // Generate a random number between -0.5 and 0.5 aproximately
-        const noiseValue = noise.perlin2(x / 15, y / 15);
+        const noiseValue = noise.perlin2(x / 15, z / 15);
 
         // Round the number to the nearest integer between 0 and 4
         const randomY = Math.round(Math.abs(noiseValue * 8) - 1);
 
         return randomY;
     }
+
+    /**
+     * @param {number} x
+     * @param {number} y
+     * @param {number} z
+     *  **/
+    static #shouldBeACavity(x, y, z) {
+        const noiseValue = noise.perlin3(x / 15, y / 15, z / 15);
+
+        // Round the number to the nearest integer between 0 and 1
+        const bool = Math.round(Math.abs(noiseValue * 4) - 2);
+
+        return bool !== 1;
+    }
+
+    static #decorateCave() {
+        // TODO
+    }
+
 }
