@@ -8,7 +8,8 @@ import {
 } from "three";
 import { scene } from "../setup";
 import Terrain from "./terrain";
-import Grid from "./grid";
+import Grid from "./map_grid";
+import renderBackground from "./background";
 
 export const mapSize = 15;
 
@@ -54,6 +55,8 @@ export function renderMap(seed = Math.random()) {
 
     const terrain = new Terrain(mapSize);
     terrain.render(seed);
+
+    renderBackground();
 
     scene.add(map);
     scene.add(edgesMap);
