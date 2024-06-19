@@ -35,6 +35,11 @@ export default class Terrain {
      * @param {number} seed
      * **/
     render(seed = Math.random()) {
+
+        console.log("*** Terrain ***")
+        console.log("Rendering terrain with seed: ", seed)
+        console.log("****************")
+
         noise.seed(seed);
 
         for (let i = 0; i < this.#size; i++) {
@@ -78,7 +83,7 @@ export default class Terrain {
                     belowCube.position.x = x;
                     belowCube.position.y = yOrigin + y - k;
                     belowCube.position.z = z;
-                    // belowCube.name = "terrain";
+                    belowCube.name = "terrain";
 
                     belowCube.add(edgesCube);
                     scene.add(belowCube);
@@ -95,8 +100,8 @@ export default class Terrain {
      * @param {number} y
      *  **/
     static randomY(x, y) {
-        // Generate a random number between -0.5 and 0.5
-        const noiseValue = noise.perlin2(x / 10, y / 10);
+        // Generate a random number between -0.5 and 0.5 aproximately
+        const noiseValue = noise.perlin2(x / 15, y / 15);
 
         // Round the number to the nearest integer between 0 and 4
         const randomY = Math.round(Math.abs(noiseValue * 8) - 1);
