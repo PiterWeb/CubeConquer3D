@@ -16,6 +16,9 @@ export default class Terrain {
     /** @type {number} **/
     #size;
 
+    /** @type {Mesh} **/
+    #terrainMesh;
+
     /** @type {number[][]} **/
     #map;
 
@@ -31,16 +34,22 @@ export default class Terrain {
         return this.#map;
     }
 
+    getTerrainMesh() {
+        return this.#terrainMesh;
+    }
+
     /**
+     * Render the terrain
      * @param {number} seed
      * **/
     render(seed = Math.random()) {
-
-        console.log("*** Terrain ***")
-        console.log("Rendering terrain with seed: ", seed)
-        console.log("****************")
+        console.log("*** Terrain ***");
+        console.log("Rendering terrain with seed: ", seed);
+        console.log("****************");
 
         noise.seed(seed);
+
+        const terrain = new Mesh();
 
         for (let i = 0; i < this.#size; i++) {
             for (let j = 0; j < this.#size; j++) {
@@ -92,9 +101,12 @@ export default class Terrain {
                 }
 
                 cube.add(edgesCube);
-                scene.add(cube);
+                terrain.add(cube);
             }
         }
+
+        scene.add(terrain);
+        this.#terrainMesh = terrain;
     }
 
     /**
