@@ -1,5 +1,5 @@
 import { Mesh, Raycaster, Vector3 } from "three";
-import { scene } from "../setup";
+import { scene } from "../../setup";
 
 /**
  * @class Raycast
@@ -19,6 +19,7 @@ export default class Raycast {
      *  @param {number} distance The distance of the ray
      *  @param {Vector3} customPosition The position to cast the ray from (default is the player's position)
      *  @param {string | null} targetName The name of the target object (default is "terrain") (if null, it will be an empty string)
+     *  @returns The coordinates of the first object that intersects with the ray and has the target name (null if there is no object)
      *  **/
     #cast(direction, distance, customPosition = null, targetName = "terrain") {
         const raycaster = new Raycaster();
@@ -42,7 +43,6 @@ export default class Raycast {
             const point = intersects[0].point;
             const distanceToPoint = this.#player.position.distanceTo(point);
             if (distanceToPoint < distance) {
-                console.log(distanceToPoint);
                 return point;
             }
         }
@@ -73,6 +73,34 @@ export default class Raycast {
      * @param {number} distance Default value is 1
      */
     boxHaveToClimb(direction, distance = 1) {
-        return this.#cast(direction, distance) !== null;
+        const terrainCords = this.#cast(direction, distance);
+
+        const isTerrainForward = terrainCords !== null;
+        if (!isTerrainForward) return false;
+
+        const climbDirection = new Vector3(0, 1, 0);
+        const isTerrainAbove =
+            this.#cast(climbDirection, 2, terrainCords) !== null;
+
+        return isTerrainForward && !isTerrainAbove;
+    }
+
+    boxHaveToColide(direction, distance = 1) {
+        const terrainCords = this.#cast(direction, distance);
+
+        const isTerrainForward = terrainCords !== null;
+        const notHaveToClimb = !this.boxHaveToClimb(direction, 1.5);
+
+        if (isTerrainForward && notHaveToClimb) return true;
+
+        //Check if there is a block below
+        const directionToCheck = new Vector3(0, -1, 0);
+
+        const isTerrainBelowNextPosition =
+            this.#cast(directionToCheck, 10, terrainCords) !== null;
+
+        if (!isTerrainBelowNextPosition) console.log("colide");
+
+        return !isTerrainBelowNextPosition;
     }
 }
