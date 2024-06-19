@@ -4,13 +4,11 @@ import {
     EdgesGeometry,
     LineBasicMaterial,
     LineSegments,
-    Vector3,
     MeshPhongMaterial,
     MeshBasicMaterial,
 } from "three";
 import { scene } from "../../setup";
-import { xOrigin, zOrigin, yOrigin, mapConstraints } from "../../map/map";
-import Tween from "@tweenjs/tween.js";
+import { xOrigin, zOrigin, yOrigin } from "../../map/map";
 import Debouncer from "../../debouncer";
 import { roleColors } from "./role";
 import { Rotation } from "../../camera";
