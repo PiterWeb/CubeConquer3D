@@ -1,4 +1,4 @@
-import { Scene, WebGLRenderer} from "three";
+import { Scene, WebGLRenderer, HemisphereLight} from "three";
 import { controllPlayer, renderPlayerBox } from "./entities/player/player.js";
 import { renderMap } from "./map/map.js";
 import setupCamera from "./camera.js";
@@ -21,6 +21,9 @@ export default function main() {
     });
 
     document.body.appendChild(renderer.domElement);
+
+    const light = new HemisphereLight(0xffffbb, 0x080820, 0.2);
+    scene.add(light);
 
     const terrain = renderMap();
     // console.log("Terrain", terrain.getMap());
