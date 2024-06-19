@@ -31,6 +31,7 @@ function setupCamera() {
         camera.position.z
     );
     light.target.position.set(xOrigin, 0, zOrigin);
+    light.castShadow = true;
     scene.add(light);
     scene.add(light.target);
 

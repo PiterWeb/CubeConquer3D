@@ -57,8 +57,10 @@ export default class Terrain {
                 const geometry = new BoxGeometry(1, 1, 1);
                 const material = new MeshPhongMaterial({ color: "white" });
                 const cube = new Mesh(geometry, material);
-                cube.castShadow = true;
                 cube.name = "terrain";
+
+                // Terrain can generate shadows (but not receive them)
+                cube.castShadow = true;
 
                 cube.position.x = x;
                 cube.position.z = z;

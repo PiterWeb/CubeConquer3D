@@ -44,13 +44,16 @@ export function renderPlayerBox(
     const material = new MeshPhongMaterial({
         color: team,
     });
-    const cube = new Mesh(geometry, material);
-    cube.position.x = x;
-    cube.position.y = y;
-    cube.position.z = z;
+    const player = new Mesh(geometry, material);
+    player.position.x = x;
+    player.position.y = y;
+    player.position.z = z;
+
+    // Player can receive shadows
+    player.receiveShadow = true;
 
     // Add the team and role to the cube
-    cube.userData = { team, role };
+    player.userData = { team, role };
 
     // Create the edges of the cube
     const edges = new EdgesGeometry(geometry);
@@ -61,11 +64,11 @@ export function renderPlayerBox(
     const edgesCube = new LineSegments(edges, line);
 
     // Add the edges to the cube
-    cube.add(edgesCube);
+    player.add(edgesCube);
 
-    scene.add(cube);
+    scene.add(player);
 
-    return cube;
+    return player;
 }
 
 const animationDuration = 150;
