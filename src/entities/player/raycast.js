@@ -1,5 +1,6 @@
 import { Mesh, Raycaster, Vector3 } from "three";
 import { scene } from "../../setup";
+import { yOrigin } from "../../map/map";
 
 /**
  * @class Raycast
@@ -54,6 +55,7 @@ export default class Raycast {
      * @param {number} distance Default value is 1.5 to avoid the player to fall when moving ()
      */
     boxHaveToFall(direction, distance = 1.5) {
+        if (this.#player.position.y <= yOrigin) return;
         const nextPlayerPosition = this.#player.position.clone();
 
         //Move the player to the new direction to check if there is a block below

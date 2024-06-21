@@ -9,17 +9,27 @@ import animate_fall from "./animate_fall";
  * @param {Mesh} player
  * @param {Raycast} playerRaycast
  * @param {number} animationDuration
+ * @param {() => void} cllbk
  */
-export default function animate_up(player, playerRaycast, animationDuration) {
+export default function animate_up(
+    player,
+    playerRaycast,
+    animationDuration,
+    cllbk = () => {}
+) {
     if (player.position.z <= mapConstraints.z.min) return;
 
     const direction = new Vector3(0, 0, -1);
 
-    if (playerRaycast.boxHaveToClimb(direction)) {
+    const boxHaveToClimb = playerRaycast.boxHaveToClimb(direction);
+    const boxHaveToFall = playerRaycast.boxHaveToFall(direction);
+    const boxHaveToColide = playerRaycast.boxHaveToColide(direction);
+
+    if (boxHaveToClimb) {
         animate_climb(player, animationDuration);
-    } else if (playerRaycast.boxHaveToFall(direction)) {
+    } else if (boxHaveToFall) {
         animate_fall(player, animationDuration);
-    } else if (playerRaycast.boxHaveToColide(direction)) {
+    } else if (boxHaveToColide) {
         return;
     }
 
@@ -38,5 +48,10 @@ export default function animate_up(player, playerRaycast, animationDuration) {
         .start()
         .onComplete(() => {
             player.rotation.x = 0;
+            if (
+                boxHaveToFall
+            )
+                return;
+            cllbk();
         });
 }

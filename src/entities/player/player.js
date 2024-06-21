@@ -17,8 +17,6 @@ import animate_up from "./animations/animate_up";
 import animate_down from "./animations/animate_down";
 import animate_left from "./animations/animate_left";
 import animate_right from "./animations/animate_right";
-import animate_climb from "./animations/animate_climb";
-import animate_fall from "./animations/animate_fall";
 /**
  * @import Team from "./team"
  * @import Role from "./role"
@@ -38,11 +36,14 @@ export function renderPlayerBox(
     role = "dps",
     { x = xOrigin, y = yOrigin, z = zOrigin } = {}
 ) {
+
     const geometry = new BoxGeometry(1, 1, 1);
     const material = new MeshPhongMaterial({
         color: team,
     });
     const player = new Mesh(geometry, material);
+
+    
     player.position.x = x;
     player.position.y = y;
     player.position.z = z;
@@ -76,40 +77,39 @@ const animationDuration = 150;
  * Animate the box movement in the scene
  *
  * @param {Mesh} player The box to animate
- * @param {'up' | 'down' | 'left' | 'right' | 'climb' | 'fall'} dir The direction of the movement
+ * @param {'up' | 'down' | 'left' | 'right'} dir The direction of the movement
  * **/
 function animateMove(player, dir) {
     const playerRaycast = new Raycast(player);
 
+    function playMoveSound() {
+        const audio = new Audio("/move.ogg");
+        audio.volume = 0.5;
+        audio.play().then(() => {
+            audio.remove();
+        })
+    }
+
     if (dir === "up") {
-        animate_up(player, playerRaycast, animationDuration);
+        animate_up(player, playerRaycast, animationDuration, playMoveSound);
         return;
     }
 
     if (dir === "down") {
-        animate_down(player, playerRaycast, animationDuration);
+        animate_down(player, playerRaycast, animationDuration, playMoveSound);
         return;
     }
 
     if (dir === "left") {
-        animate_left(player, playerRaycast, animationDuration);
+        animate_left(player, playerRaycast, animationDuration, playMoveSound);
         return;
     }
 
     if (dir === "right") {
-        animate_right(player, playerRaycast, animationDuration);
+        animate_right(player, playerRaycast, animationDuration, playMoveSound);
         return;
     }
 
-    if (dir === "climb") {
-        animate_climb(player, animationDuration);
-        return;
-    }
-
-    if (dir === "fall") {
-        animate_fall(player, animationDuration);
-        return;
-    }
 }
 
 /**

@@ -5,6 +5,7 @@ import { yOrigin } from "../../../map/map";
 /**
  * @param {Mesh} player
  * @param {number} animationDuration
+ * @param {() => void} cllbk
  */
 export default function animate_fall(player, animationDuration) {
     if (player.position.y <= yOrigin) return;
@@ -17,6 +18,12 @@ export default function animate_fall(player, animationDuration) {
         )
         .onUpdate((object) => {
             player.position.y = object.y;
+        }).onComplete(() => {
+            const audio = new Audio("/jump.ogg");
+            audio.volume = 0.5;
+            audio.play().then(() => {
+                audio.remove();
+            })
         })
         .start();
 }
