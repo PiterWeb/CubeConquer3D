@@ -3,6 +3,7 @@ import { controllPlayer, renderPlayerBox } from "./entities/player/player.js";
 import { renderMap } from "./map/map.js";
 import setupCamera from "./camera.js";
 import { update as tweenUpdate } from "@tweenjs/tween.js";
+import { setupCanvas } from "./canvas/canvas.js";
 
 export const scene = new Scene();
 
@@ -42,7 +43,6 @@ export default function main() {
 
     renderer.setAnimationLoop(animate);
 
-    // Applying blur to the canvas
-    const canvas = document.querySelector("canvas");
-    canvas.style.filter = "blur(1px)";
+    // Applying canvas default styles
+    setupCanvas()
 }

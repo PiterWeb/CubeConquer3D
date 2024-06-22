@@ -51,7 +51,9 @@ function setupCameraRotation(camera, light) {
 
     const rotationAnimationDuration = 750;
 
-    document.addEventListener("click", (e) => {
+    const canvas = document.querySelector("canvas");
+
+    canvas.addEventListener("click", (e) => {
         rotationDebouncer.debounce(() => {
             e.stopPropagation();
             e.preventDefault();
