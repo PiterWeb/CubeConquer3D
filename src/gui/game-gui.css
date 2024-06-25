@@ -1,0 +1,118 @@
+#game-gui {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    z-index: -1;
+    flex-wrap: wrap;
+}
+
+#left-up {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: flex-start;
+    z-index: 2;
+    flex-wrap: wrap;
+    margin-left: 1%;
+}
+
+.color {
+    width: 20px;
+    height: 20px;
+    margin: 1rem;
+}
+
+.color[data-color="red"] {
+    background-color: red;
+}
+
+.color[data-color="blue"] {
+    background-color: blue;
+}
+
+#left-up {
+    * {
+        pointer-events: auto;
+    }
+}
+
+#right-up {
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 50%;
+    height: 50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    align-content: flex-start;
+    z-index: 2;
+    flex-wrap: wrap;
+    margin-right: 1%;
+}
+
+#right-up {
+    * {
+        pointer-events: auto;
+    }
+}
+
+#left-down {
+    pointer-events: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 50%;
+    height: 50%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    align-content: flex-end;
+    z-index: 2;
+    flex-wrap: wrap;
+    margin-left: 1%;
+
+}
+
+#left-down {
+    * {
+        pointer-events: auto;
+    }
+}
+
+#right-down {
+    pointer-events: none;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 50%;
+    height: 50%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    align-content: flex-end;
+    z-index: 2;
+    flex-wrap: wrap;
+    margin-right: 1%;
+}
+
+#right-down {
+    * {
+        pointer-events: auto;
+    }
+}
+

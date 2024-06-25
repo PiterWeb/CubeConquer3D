@@ -1,0 +1,45 @@
+@import url("./game-gui.css");
+@import url("./init-gui.css");
+
+@keyframes gui-appear {
+    0% {
+        opacity: 0;
+    }
+
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+#gui {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    z-index: 1;
+    flex-wrap: wrap;
+    animation: gui-appear 2s ease-in-out;
+}
+
+#gui {
+    * {
+        h1 {
+            color: rgb(255, 255, 255);
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            margin-bottom: 1rem;
+            font-size: 4em;
+        }
+    }
+}
