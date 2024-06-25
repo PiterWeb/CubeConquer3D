@@ -9,6 +9,7 @@ import {
 import { scene } from "../setup";
 import Terrain from "./terrain";
 import Grid from "./map_grid";
+import animateTerrainFall from "./animate_terrain_fall";
 
 export const mapSize = 15;
 
@@ -57,6 +58,8 @@ export function renderMap(seed = Math.random()) {
 
     scene.add(map);
     scene.add(edgesMap);
+
+    animateTerrainFall(terrain);
 
     return terrain;
 }

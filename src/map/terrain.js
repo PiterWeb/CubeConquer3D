@@ -103,7 +103,7 @@ export default class Terrain {
                     belowCube.name = "terrain";
 
                     belowCube.add(edgesCube);
-                    scene.add(belowCube);
+                    terrain.add(belowCube);
                 }
 
                 cube.add(edgesCube);
