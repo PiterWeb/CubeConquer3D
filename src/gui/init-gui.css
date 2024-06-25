@@ -13,7 +13,6 @@
     z-index: 2;
     flex-wrap: wrap;
     background-color: rgba(0, 0, 0, 0.7);
-    transition: all 0.5s ease-in-out;
 }
 
 #init-gui {
@@ -26,11 +25,23 @@
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+#init-gui-header {
+    h1 {
+        filter: drop-shadow(12px 5px 37px #737373);
+    }
 }
 
 #btn-init {
     margin-inline: 1rem;
     text-align: center;
+    -webkit-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.75);
 }
 
 @media (width <= 768px) {

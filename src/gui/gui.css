@@ -43,3 +43,15 @@
         }
     }
 }
+
+h1::selection {
+    background-color: #1a1a1b;
+}
+
+h2::selection {
+    background-color: #1a1a1b;
+}
+
+h3::selection {
+    background-color: #1a1a1b;
+}
