@@ -1,5 +1,5 @@
 import { Mesh } from "three";
-import { Tween } from "@tweenjs/tween.js";
+import { Tween, Easing } from "@tweenjs/tween.js";
 import { yOrigin } from "../../../map/map";
 
 /**
@@ -16,6 +16,7 @@ export default function animate_fall(player, animationDuration) {
             },
             animationDuration
         )
+        .easing(Easing.Quadratic.InOut)
         .onUpdate((object) => {
             player.position.y = object.y;
         }).onComplete(() => {

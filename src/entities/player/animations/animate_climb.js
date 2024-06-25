@@ -1,5 +1,5 @@
 import { Mesh } from "three";
-import { Tween } from "@tweenjs/tween.js";
+import { Tween, Easing } from "@tweenjs/tween.js";
 
 /**
  * @param {Mesh} player
@@ -13,6 +13,7 @@ export default function animate_climb(player, animationDuration) {
             },
             animationDuration / 2
         )
+        .easing(Easing.Quadratic.InOut)
         .onUpdate((object) => {
             player.position.y = object.y;
         })
