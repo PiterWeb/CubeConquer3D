@@ -1,13 +1,25 @@
-export default function setupGui() {
+import { Tween } from "@tweenjs/tween.js";
 
+export default function setupGui() {
     const btnInit = document.getElementById("btn-init");
 
     btnInit.addEventListener("click", () => {
-        
         const initGui = document.getElementById("init-gui");
 
-        initGui.style.display = "none";
-
+        new Tween({ opacity: 1 })
+            .to(
+                {
+                    opacity: 0,
+                },
+                500
+            )
+            .onUpdate((object) => {
+                initGui.style.opacity = object.opacity;
+            })
+            .start()
+            .onComplete(() => {
+                initGui.style.display = "none";
+                initGui.style.opacity = 1;
+            });
     });
-
 }
