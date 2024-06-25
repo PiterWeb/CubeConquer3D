@@ -3,7 +3,10 @@ import { controllPlayer, renderPlayerBox } from "./entities/player/player.js";
 import { renderMap } from "./map/map.js";
 import setupCamera from "./camera.js";
 import { update as tweenUpdate } from "@tweenjs/tween.js";
-import { setupCanvas } from "./canvas/canvas.js";
+import setupGui from "./gui/gui.js";    
+
+// Applying canvas default styles
+import './canvas/canvas.css'
 
 export const scene = new Scene();
 
@@ -43,6 +46,6 @@ export default function main() {
 
     renderer.setAnimationLoop(animate);
 
-    // Applying canvas default styles
-    setupCanvas()
+    setupGui();
+
 }

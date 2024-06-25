@@ -1,12 +1,52 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <script type="module" src="/main.js"></script>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>CubeConquer 3D</title>
+        <link rel="stylesheet" href="./src/gui/gui.css" />
+    </head>
+    <body>
+        <section id="gui">
+            <main id="init-gui">
+                <header id="init-gui-header">
+                    <h1>Cube Conquer 3D</h1>
+                    <button id="btn-init" form="gui">Start Now</button>
+                </header>
+                <section id="init-gui-controls">
+                    <h2>Controls</h2>
+                    <hr />
+                    <div class="controls">
+                        <h3>Movement</h3>
+                        <kbd>W</kbd>
+                        <kbd>A</kbd>
+                        <kbd>S</kbd>
+                        <kbd>D</kbd>
+                    </div>
+                    <div class="controls">
+                        <h3>Camera</h3>
+                        <kbd>Left click</kbd>
+                    </div>
+                </section>
+            </main>
+            <aside id="game-gui">
+                <div id="left-up">
+                    <h3>Player1:</h3>
+                    <div class="color" data-color="blue"></div>
+                </div>
+                <div id="right-up">
+                    <h3>Player2:</h3>
+                    <div class="color" data-color="red"></div>
+                </div>
+                <div id="left-down">
+                    <h3>Placeholder</h3>
+                </div>
+                <div id="right-down">
+                    <h3>Placeholder</h3>
+                </div>
+            </aside>
+        </section>
+        <script type="module" src="/main.js"></script>
+    </body>
 </html>
