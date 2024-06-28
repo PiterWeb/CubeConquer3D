@@ -83,7 +83,7 @@ function animateMove(player, dir) {
     const playerRaycast = new Raycast(player);
 
     function playMoveSound() {
-        const audio = new Audio("/move.ogg");
+        const audio = new Audio("/move.wav");
         audio.volume = 0.5;
         audio.play().then(() => {
             audio.remove();

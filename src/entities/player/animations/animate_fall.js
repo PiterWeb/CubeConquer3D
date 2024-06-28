@@ -20,7 +20,7 @@ export default function animate_fall(player, animationDuration) {
         .onUpdate((object) => {
             player.position.y = object.y;
         }).onComplete(() => {
-            const audio = new Audio("/jump.ogg");
+            const audio = new Audio("/fall.wav");
             audio.volume = 0.5;
             audio.play().then(() => {
                 audio.remove();
