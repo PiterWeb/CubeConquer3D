@@ -30,12 +30,6 @@ export default function main() {
     scene.add(light);
 
     const terrain = renderMap();
-    // console.log("Terrain", terrain.getMap());
-
-    const playerBox = renderPlayerBox("blue", "tank");
-
-    // Control the playerBox (one time only)
-    controllPlayer(playerBox);
 
     const camera = setupCamera();
 

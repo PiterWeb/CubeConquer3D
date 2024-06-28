@@ -101,7 +101,7 @@ export default class Raycast {
         const isTerrainBelowNextPosition =
             this.#cast(directionToCheck, 10, terrainCords) !== null;
 
-        if (!isTerrainBelowNextPosition) console.log("colide");
+        // if (!isTerrainBelowNextPosition) console.log("colide");
 
         return !isTerrainBelowNextPosition;
     }

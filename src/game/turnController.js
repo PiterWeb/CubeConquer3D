@@ -1,6 +1,8 @@
-import teamType from "./player/team.js";
+/**
+ * @import {teamType} from "./teamController.js";
+ */
 
-class Turns {
+export default class TurnController {
     #round = 0;
 
     /** @type {Map<teamType, int>} */

@@ -62,9 +62,6 @@ function setupCameraRotation(camera, light) {
             const initialCameraX = camera.position.x;
             const initialCameraZ = camera.position.z;
 
-            console.log("Rotation", rotation);
-            console.log( camera.position.z,light.position.z, camera.position.x, light.position.x)
-
             if (rotation == 0) {
                 new Tween({ z_camera: camera.position.z, x_light: light.position.x})
                     .to({ z_camera: camera.position.z - mapSize, x_light: initialCameraX }, rotationAnimationDuration)

@@ -17,6 +17,7 @@ import animate_up from "./animations/animate_up";
 import animate_down from "./animations/animate_down";
 import animate_left from "./animations/animate_left";
 import animate_right from "./animations/animate_right";
+import { createPlayerSelector, removePlayerSelector } from "./player_selector";
 /**
  * @import Team from "./team"
  * @import Role from "./role"
@@ -36,14 +37,12 @@ export function renderPlayerBox(
     role = "dps",
     { x = xOrigin, y = yOrigin, z = zOrigin } = {}
 ) {
-
     const geometry = new BoxGeometry(1, 1, 1);
     const material = new MeshPhongMaterial({
         color: team,
     });
     const player = new Mesh(geometry, material);
 
-    
     player.position.x = x;
     player.position.y = y;
     player.position.z = z;
@@ -87,7 +86,7 @@ function animateMove(player, dir) {
         audio.volume = 0.5;
         audio.play().then(() => {
             audio.remove();
-        })
+        });
     }
 
     if (dir === "up") {
@@ -109,7 +108,6 @@ function animateMove(player, dir) {
         animate_right(player, playerRaycast, animationDuration, playMoveSound);
         return;
     }
-
 }
 
 /**
@@ -117,78 +115,83 @@ function animateMove(player, dir) {
  * @param {Mesh} player The player to move
  * **/
 export function controllPlayer(player) {
-    const geometry = new BoxGeometry(1, 1, 1);
-    const material = new MeshBasicMaterial({
-        color: player.userData.team,
-        opacity: 0.5,
-        transparent: true,
-    });
-    const tempBox = new Mesh(geometry, material);
-    tempBox.position.set(
-        player.position.x,
-        player.position.y,
-        player.position.z
-    );
+    return new Promise((resolve) => {
 
-    const tempEdges = new EdgesGeometry(geometry);
-    const line = new LineBasicMaterial({
-        color: roleColors[player.userData.role],
-    });
-    const tempBoxEdges = new LineSegments(tempEdges, line);
+        const selector = createPlayerSelector(player);
 
-    tempBox.add(tempBoxEdges);
-    scene.add(tempBox);
+        const geometry = new BoxGeometry(1, 1, 1);
+        const material = new MeshBasicMaterial({
+            color: player.userData.team,
+            opacity: 0.5,
+            transparent: true,
+        });
+        const tempBox = new Mesh(geometry, material);
+        tempBox.position.set(
+            player.position.x,
+            player.position.y,
+            player.position.z
+        );
 
-    // Create a raycaster to detect the tempbox position
+        const tempEdges = new EdgesGeometry(geometry);
+        const line = new LineBasicMaterial({
+            color: roleColors[player.userData.role],
+        });
+        const tempBoxEdges = new LineSegments(tempEdges, line);
 
-    const actionDebouncer = new Debouncer();
+        tempBox.add(tempBoxEdges);
+        scene.add(tempBox);
 
-    /**
-     *
-     * @param {KeyboardEvent} event
-     * **/
-    function move(event) {
-        actionDebouncer.debounce(() => {
-            if (event.key === "w") {
-                animateMove(tempBox, Rotation.getDirection("up"));
-                return;
-            }
-            if (event.key === "s") {
-                animateMove(tempBox, Rotation.getDirection("down"));
-                return;
-            }
+        const actionDebouncer = new Debouncer();
 
-            if (event.key === "a") {
-                animateMove(tempBox, Rotation.getDirection("left"));
-                return;
-            }
+        /**
+         *
+         * @param {KeyboardEvent} event
+         * **/
+        function move(event) {
+            actionDebouncer.debounce(() => {
+                if (event.key === "w") {
+                    animateMove(tempBox, Rotation.getDirection("up"));
+                    return;
+                }
+                if (event.key === "s") {
+                    animateMove(tempBox, Rotation.getDirection("down"));
+                    return;
+                }
 
-            if (event.key === "d") {
-                animateMove(tempBox, Rotation.getDirection("right"));
-                return;
-            }
-        }, animationDuration);
-    }
+                if (event.key === "a") {
+                    animateMove(tempBox, Rotation.getDirection("left"));
+                    return;
+                }
 
-    window.addEventListener("keydown", move);
-
-    /**
-     * @param {KeyboardEvent} event
-     * **/
-    function confirmMovement(event) {
-        // Spacebar
-        if (event.key === " ") {
-            player.position.set(
-                tempBox.position.x,
-                tempBox.position.y,
-                tempBox.position.z
-            );
-            scene.remove(tempBox);
-            window.removeEventListener("keydown", move);
-            window.removeEventListener("keydown", confirmMovement);
+                if (event.key === "d") {
+                    animateMove(tempBox, Rotation.getDirection("right"));
+                    return;
+                }
+            }, animationDuration);
         }
-    }
 
-    // Detect spacebar to confirm the movement
-    window.addEventListener("keydown", confirmMovement);
+        window.addEventListener("keydown", move);
+
+        /**
+         * @param {KeyboardEvent} event
+         * **/
+        function confirmMovement(event) {
+            // Spacebar
+            if (event.key === " ") {
+                player.position.set(
+                    tempBox.position.x,
+                    tempBox.position.y,
+                    tempBox.position.z
+                );
+                scene.remove(tempBox);
+                window.removeEventListener("keydown", move);
+                window.removeEventListener("keydown", confirmMovement);
+                removePlayerSelector(player, selector);
+                resolve();
+            }
+        }
+
+        // Detect spacebar to confirm the movement
+        window.addEventListener("keydown", confirmMovement);
+    });
 }
