@@ -53,6 +53,10 @@ function setupCameraRotation(camera, light) {
 
     const canvas = document.querySelector("canvas");
 
+    if (!canvas) {
+        throw new Error("Canvas not found");
+    }
+
     canvas.addEventListener("click", (e) => {
         rotationDebouncer.debounce(() => {
             e.stopPropagation();
@@ -131,15 +135,21 @@ export class Rotation {
      * @param {'up' | 'down' | 'left' | 'right'} normalDirection
      * **/
     static getDirection(normalDirection) {
+
         switch (normalDirection) {
             case "up":
-                return ["up", "left", "down", "right"][this.#rotation];
+                
+                const upDirections = /** @type {const} */ (["up", "left", "down", "right"]);
+                return upDirections[this.#rotation];
             case "down":
-                return ["down", "right", "up", "left"][this.#rotation];
+                const downDirections = /** @type {const} */ (["down", "right", "up", "left"]);
+                return downDirections[this.#rotation];
             case "left":
-                return ["left", "down", "right", "up"][this.#rotation];
+                const leftDirections = /** @type {const} */ (["left", "down", "right", "up"]);
+                return leftDirections[this.#rotation];
             case "right":
-                return ["right", "up", "left", "down"][this.#rotation];
+                const rightDirections = /** @type {const} */ (["right", "up", "left", "down"]);
+                return rightDirections[this.#rotation] ?? "right";
             default:
                 throw new Error("Invalid direction");
         }

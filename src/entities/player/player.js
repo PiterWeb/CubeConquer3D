@@ -19,13 +19,13 @@ import animate_left from "./animations/animate_left";
 import animate_right from "./animations/animate_right";
 import { createPlayerSelector, removePlayerSelector } from "./player_selector";
 /**
- * @import Team from "./team"
+ * @import {teamType} from "../../game/teamController"
  * @import Role from "./role"
  */
 
 /**
  *  Render a box in the scene
- *  @param {Team} team The team color
+ *  @param {teamType} team The team color
  *  @param {Role} role The role of the player
  *  @param {Object} position The position of the box
  *  @param {number} position.x The x position of the box
@@ -35,7 +35,7 @@ import { createPlayerSelector, removePlayerSelector } from "./player_selector";
 export function renderPlayerBox(
     team = "blue",
     role = "dps",
-    { x = xOrigin, y = yOrigin, z = zOrigin } = {}
+    { x = xOrigin, y = yOrigin, z = zOrigin } = {x:xOrigin, y:yOrigin, z:zOrigin}
 ) {
     const geometry = new BoxGeometry(1, 1, 1);
     const material = new MeshPhongMaterial({
@@ -187,7 +187,7 @@ export function controllPlayer(player) {
                 window.removeEventListener("keydown", move);
                 window.removeEventListener("keydown", confirmMovement);
                 removePlayerSelector(player, selector);
-                resolve();
+                resolve(null);
             }
         }
 

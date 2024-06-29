@@ -18,7 +18,7 @@ export default class Raycast {
      *  Cast a ray from the player's position
      *  @param {Vector3} direction The direction of the ray (normalized)
      *  @param {number} distance The distance of the ray
-     *  @param {Vector3} customPosition The position to cast the ray from (default is the player's position)
+     *  @param {Vector3 | null} customPosition The position to cast the ray from (default is the player's position)
      *  @param {string | null} targetName The name of the target object (default is "terrain") (if null, it will be an empty string)
      *  @returns The coordinates of the first object that intersects with the ray and has the target name (null if there is no object)
      *  **/
@@ -87,8 +87,14 @@ export default class Raycast {
         return isTerrainForward && !isTerrainAbove;
     }
 
+     /**
+     * @param {Vector3} direction The direction to check if the player have to climb
+     * @param {number} distance Default value is 1
+     */
     boxHaveToColide(direction, distance = 1) {
         const terrainCords = this.#cast(direction, distance);
+
+        if (terrainCords === null) return false;
 
         const isTerrainForward = terrainCords !== null;
         const notHaveToClimb = !this.boxHaveToClimb(direction, 1.5);

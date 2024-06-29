@@ -5,7 +5,6 @@
 export default class TurnController {
     #round = 0;
 
-    /** @type {Map<teamType, int>} */
     #turns = {
         red: 0,
         blue: 0,
