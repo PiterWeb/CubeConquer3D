@@ -81,31 +81,32 @@ const animationDuration = 150;
 function animateMove(player, dir) {
     const playerRaycast = new Raycast(player);
 
-    function playMoveSound() {
+    function onAnimationFinish() {
         const audio = new Audio("/move.wav");
         audio.volume = 0.5;
         audio.play().then(() => {
             audio.remove();
         });
+        player.userData.moving = false;
     }
 
     if (dir === "up") {
-        animate_up(player, playerRaycast, animationDuration, playMoveSound);
+        animate_up(player, playerRaycast, animationDuration, onAnimationFinish);
         return;
     }
 
     if (dir === "down") {
-        animate_down(player, playerRaycast, animationDuration, playMoveSound);
+        animate_down(player, playerRaycast, animationDuration, onAnimationFinish);
         return;
     }
 
     if (dir === "left") {
-        animate_left(player, playerRaycast, animationDuration, playMoveSound);
+        animate_left(player, playerRaycast, animationDuration, onAnimationFinish);
         return;
     }
 
     if (dir === "right") {
-        animate_right(player, playerRaycast, animationDuration, playMoveSound);
+        animate_right(player, playerRaycast, animationDuration, onAnimationFinish);
         return;
     }
 }
@@ -149,6 +150,9 @@ export function controllPlayer(player) {
          * **/
         function move(event) {
             actionDebouncer.debounce(() => {
+
+                tempBox.userData.moving = true;
+
                 if (event.key === "w") {
                     animateMove(tempBox, Rotation.getDirection("up"));
                     return;
@@ -177,7 +181,7 @@ export function controllPlayer(player) {
          * **/
         function confirmMovement(event) {
             // Spacebar
-            if (event.key === " ") {
+            if (event.key === " " && !tempBox.userData.moving) {
                 player.position.set(
                     tempBox.position.x,
                     tempBox.position.y,
