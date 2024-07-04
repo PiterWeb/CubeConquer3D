@@ -9,9 +9,16 @@ import animate_fall from "./animate_fall";
  * @param {Mesh} player
  * @param {Raycast} playerRaycast
  * @param {number} animationDuration
- * @param {() => void} cllbk
+ * @param {() => void} cllbkStart
+ * @param {(fall: boolean) => void} cllbkEnd
  */
-export default function animate_down(player, playerRaycast, animationDuration, cllbk = () => {}) {
+export default function animate_down(
+    player,
+    playerRaycast,
+    animationDuration,
+    cllbkStart = () => {},
+    cllbkEnd = () => {}
+) {
     if (player.position.z >= mapConstraints.z.max) return;
 
     const direction = new Vector3(0, 0, 1);
@@ -41,12 +48,10 @@ export default function animate_down(player, playerRaycast, animationDuration, c
             player.position.z = object.z;
         })
         .start()
+        .onStart(() => cllbkStart())
         .onComplete(() => {
             player.rotation.x = 0;
-            if (
-                boxHaveToFall
-            )
-                return;
-            cllbk();
+            const fall = boxHaveToFall !== false;
+            cllbkEnd(fall);
         });
 }

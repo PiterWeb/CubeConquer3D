@@ -5,10 +5,8 @@ import { yOrigin } from "../../../map/map";
 /**
  * @param {Mesh} player
  * @param {number} animationDuration
- * @param {() => void} cllbk
  */
 export default function animate_fall(player, animationDuration) {
-    if (player.position.y <= yOrigin) return;
     new Tween({ y: player.position.y })
         .to(
             {

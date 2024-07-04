@@ -9,13 +9,15 @@ import animate_fall from "./animate_fall";
  * @param {Mesh} player
  * @param {Raycast} playerRaycast
  * @param {number} animationDuration
- * @param {() => void} cllbk
+ * @param {() => void} cllbkStart
+ * @param {(fall: boolean) => void} cllbkEnd
  */
 export default function animate_up(
     player,
     playerRaycast,
     animationDuration,
-    cllbk = () => {}
+    cllbkStart = () => {},
+    cllbkEnd = () => {}
 ) {
     if (player.position.z <= mapConstraints.z.min) return;
 
@@ -46,12 +48,10 @@ export default function animate_up(
             player.position.z = object.z;
         })
         .start()
+        .onStart(() => cllbkStart())
         .onComplete(() => {
             player.rotation.x = 0;
-            if (
-                boxHaveToFall
-            )
-                return;
-            cllbk();
+            const fall = boxHaveToFall !== false;
+            cllbkEnd(fall);
         });
 }
