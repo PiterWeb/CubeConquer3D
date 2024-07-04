@@ -6,6 +6,7 @@ import {
     LineSegments,
     MeshPhongMaterial,
     MeshBasicMaterial,
+    BackSide,
 } from "three";
 import { scene } from "../../setup";
 import { xOrigin, zOrigin, yOrigin } from "../../map/map";
@@ -18,10 +19,32 @@ import animate_down from "./animations/animate_down";
 import animate_left from "./animations/animate_left";
 import animate_right from "./animations/animate_right";
 import { createPlayerSelector, removePlayerSelector } from "./player_selector";
+import { Tween } from "@tweenjs/tween.js";
 /**
  * @import {teamType} from "../../game/teamController"
  * @import Role from "./role"
  */
+
+/**
+ * @class Player - A class to represent a player in the scene
+ * @extends Mesh
+ */
+export class Player extends Mesh {
+    /**
+     * @param {BoxGeometry} geometry
+     * @param {MeshPhongMaterial} material
+     * @param {Object} userData
+     * @param {teamType} userData.team
+     * @param {Role} userData.role
+     * @param {boolean} userData.moving
+     * @param {Tween?} userData.selector_animation
+     */
+    constructor(geometry, material, userData) {
+        super(geometry, material);
+        this.userData = userData;
+        this.userData
+    }
+}
 
 /**
  *  Render a box in the scene
@@ -31,17 +54,28 @@ import { createPlayerSelector, removePlayerSelector } from "./player_selector";
  *  @param {number} position.x The x position of the box
  *  @param {number} position.y The y position of the box
  *  @param {number} position.z The z position of the box
+ * @returns {Player} The player box
  **/
 export function renderPlayerBox(
     team = "blue",
     role = "dps",
-    { x = xOrigin, y = yOrigin, z = zOrigin } = {x:xOrigin, y:yOrigin, z:zOrigin}
+    { x = xOrigin, y = yOrigin, z = zOrigin } = {
+        x: xOrigin,
+        y: yOrigin,
+        z: zOrigin,
+    }
 ) {
     const geometry = new BoxGeometry(1, 1, 1);
     const material = new MeshPhongMaterial({
         color: team,
     });
-    const player = new Mesh(geometry, material);
+
+    const player = new Player(geometry, material, {
+        team,
+        role,
+        moving: false,
+        selector_animation: null,
+    });
 
     player.position.x = x;
     player.position.y = y;
@@ -50,19 +84,18 @@ export function renderPlayerBox(
     // Player can receive shadows
     player.receiveShadow = true;
 
-    // Add the team and role to the cube
-    player.userData = { team, role };
-
     // Create the edges of the cube
-    const edges = new EdgesGeometry(geometry);
-    const line = new LineBasicMaterial({
+    const edges = new BoxGeometry(1.1, 1.1, 1.1);
+
+    const materialEdges = new MeshBasicMaterial({
         color: roleColors[role],
-        linewidth: 3,
-    });
-    const edgesCube = new LineSegments(edges, line);
+        side: BackSide,
+    })
+
+    const meshEdges = new Mesh(edges, materialEdges);
 
     // Add the edges to the cube
-    player.add(edgesCube);
+    player.add(meshEdges);
 
     scene.add(player);
 
@@ -75,49 +108,80 @@ const animationDuration = 150;
  *
  * Animate the box movement in the scene
  *
- * @param {Mesh} player The box to animate
+ * @param {Mesh & {userData: { moving?: boolean}}} player The box to animate
  * @param {'up' | 'down' | 'left' | 'right'} dir The direction of the movement
  * **/
 function animateMove(player, dir) {
     const playerRaycast = new Raycast(player);
 
-    function onAnimationFinish() {
-        const audio = new Audio("/move.wav");
-        audio.volume = 0.5;
-        audio.play().then(() => {
-            audio.remove();
-        });
+    /** @param {boolean} fall */
+    function onAnimationFinish(fall) {
+        if (!fall) {
+            const audio = new Audio("/move.wav");
+            audio.volume = 0.5;
+            audio.play().then(() => {
+                audio.remove();
+            });
+        }
         player.userData.moving = false;
     }
 
+    function onAnimationStart() {
+        player.userData.moving = true;
+    }
+
     if (dir === "up") {
-        animate_up(player, playerRaycast, animationDuration, onAnimationFinish);
+        animate_up(
+            player,
+            playerRaycast,
+            animationDuration,
+            onAnimationStart,
+            onAnimationFinish
+        );
         return;
     }
 
     if (dir === "down") {
-        animate_down(player, playerRaycast, animationDuration, onAnimationFinish);
+        animate_down(
+            player,
+            playerRaycast,
+            animationDuration,
+            onAnimationStart,
+            onAnimationFinish
+        );
         return;
     }
 
     if (dir === "left") {
-        animate_left(player, playerRaycast, animationDuration, onAnimationFinish);
+        animate_left(
+            player,
+            playerRaycast,
+            animationDuration,
+            onAnimationStart,
+            onAnimationFinish
+        );
         return;
     }
 
     if (dir === "right") {
-        animate_right(player, playerRaycast, animationDuration, onAnimationFinish);
+        animate_right(
+            player,
+            playerRaycast,
+            animationDuration,
+            onAnimationStart,
+            onAnimationFinish
+        );
         return;
     }
 }
 
 /**
  * Move the player with the keyboard (WASD) and confirm the movement with the spacebar
- * @param {Mesh} player The player to move
+ * @param {Player} player The player to move
+ * @returns {Promise<void>} The promise resolves when the movement is confirmed
  * **/
 export function controllPlayer(player) {
     return new Promise((resolve) => {
-
         const selector = createPlayerSelector(player);
 
         const geometry = new BoxGeometry(1, 1, 1);
@@ -126,6 +190,8 @@ export function controllPlayer(player) {
             opacity: 0.5,
             transparent: true,
         });
+
+        /** @type {Mesh & {userData: { moving?: boolean}}} */
         const tempBox = new Mesh(geometry, material);
         tempBox.position.set(
             player.position.x,
@@ -133,11 +199,14 @@ export function controllPlayer(player) {
             player.position.z
         );
 
+        tempBox.userData.moving = false;
+
         const tempEdges = new EdgesGeometry(geometry);
         const line = new LineBasicMaterial({
             color: roleColors[player.userData.role],
         });
         const tempBoxEdges = new LineSegments(tempEdges, line);
+
 
         tempBox.add(tempBoxEdges);
         scene.add(tempBox);
@@ -150,9 +219,6 @@ export function controllPlayer(player) {
          * **/
         function move(event) {
             actionDebouncer.debounce(() => {
-
-                tempBox.userData.moving = true;
-
                 if (event.key === "w") {
                     animateMove(tempBox, Rotation.getDirection("up"));
                     return;
@@ -191,7 +257,7 @@ export function controllPlayer(player) {
                 window.removeEventListener("keydown", move);
                 window.removeEventListener("keydown", confirmMovement);
                 removePlayerSelector(player, selector);
-                resolve(null);
+                resolve();
             }
         }
 
