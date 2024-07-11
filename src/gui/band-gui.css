@@ -1,0 +1,24 @@
+.band_img {
+    width: 10%;
+    margin: 1rem;
+}
+
+.band_header {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: row;
+}
+
+#band_header_red {
+    justify-content: flex-end;
+}
+
+.units {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    flex-wrap: wrap;
+}

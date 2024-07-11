@@ -11,7 +11,7 @@ import {
 import { scene } from "../../setup";
 import { xOrigin, zOrigin, yOrigin } from "../../map/map";
 import Debouncer from "../../debouncer";
-import { roleColors } from "./role";
+import { roleColors, roleStats } from "./role";
 import { Rotation } from "../../camera";
 import Raycast from "./raycast";
 import animate_up from "./animations/animate_up";
@@ -38,11 +38,48 @@ export class Player extends Mesh {
      * @param {Role} userData.role
      * @param {boolean} userData.moving
      * @param {Tween?} userData.selector_animation
+     * @param {number?} userData.current_health
      */
     constructor(geometry, material, userData) {
         super(geometry, material);
         this.userData = userData;
-        this.userData
+        if (this.userData.current_health === null) {
+            this.userData.current_health = roleStats[userData.role].health;
+        }
+    }
+
+    /**
+     * @param {number} damage
+     * @returns {void}
+     */
+    receiveDamage(damage) {
+        if (!this.userData.current_health) return;
+
+        const remeaningHealth = this.userData.current_health - damage;
+
+        if (remeaningHealth <= 0) this.userData.current_health = 0;
+        else this.userData.current_health = remeaningHealth;
+
+        if (this.userData.current_health === 0) this.#death();
+    }
+
+    /**
+     * @param {number} heal
+     * @returns {void}
+     */
+    receiveHeal(heal) {
+        if (!this.userData.current_health) return;
+        this.userData.current_health += heal;
+        if (
+            this.userData.current_health > roleStats[this.userData.role].health
+        ) {
+            this.userData.current_health = roleStats[this.userData.role].health;
+        }
+    }
+
+    #death() {
+        this.userData.role = "dead";
+        console.log("Player is dead");
     }
 }
 
@@ -75,6 +112,7 @@ export function renderPlayerBox(
         role,
         moving: false,
         selector_animation: null,
+        current_health: null,
     });
 
     player.position.x = x;
@@ -90,7 +128,7 @@ export function renderPlayerBox(
     const materialEdges = new MeshBasicMaterial({
         color: roleColors[role],
         side: BackSide,
-    })
+    });
 
     const meshEdges = new Mesh(edges, materialEdges);
 
@@ -206,7 +244,6 @@ export function controllPlayer(player) {
             color: roleColors[player.userData.role],
         });
         const tempBoxEdges = new LineSegments(tempEdges, line);
-
 
         tempBox.add(tempBoxEdges);
         scene.add(tempBox);

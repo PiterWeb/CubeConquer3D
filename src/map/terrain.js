@@ -26,7 +26,7 @@ export default class Terrain {
     constructor(size) {
         this.#size = size;
         this.#map = new Array(size)
-            .fill()
+            .fill(null)
             .map(() => new Array(size).fill(yOrigin));
     }
 
@@ -86,7 +86,6 @@ export default class Terrain {
 
                 // Generate Cubes below the current cube
                 for (let k = y; k >= 1; k--) {
-
                     if (Terrain.#shouldBeACavity(x, yOrigin + y - k, z)) {
                         Terrain.#decorateCave(x, yOrigin + y - k, z);
                         // continue;
@@ -143,8 +142,7 @@ export default class Terrain {
         return bool !== 1;
     }
 
-    static #decorateCave() {
+    static #decorateCave(x, y, z) {
         // TODO
     }
-
 }

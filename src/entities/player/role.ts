@@ -1,9 +1,10 @@
-type role = "tank" | "healer" | "dps";
+type role = "tank" | "healer" | "dps" | "dead";
 
 export const roleColors = {
     tank: "gray",
     healer: "green",
     dps: "orange",
+    dead: "transparent",
 } as const;
 
 export const roleStats = {
@@ -22,6 +23,11 @@ export const roleStats = {
         shield: 0,
         damage: 100,
     },
+    dead: {
+        health: 0,
+        shield: 0,
+        damage: 0
+    }
 } as const;
 
 export default role;

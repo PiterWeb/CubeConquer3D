@@ -1,12 +1,12 @@
 import { Mesh } from "three";
-import { renderPlayerBox } from "../entities/player/player";
+import { Player, renderPlayerBox } from "../entities/player/player";
 import { xOrigin, yOrigin, zOrigin } from "../map/map";
 
 /** @typedef {'red' | 'blue'} teamType */
 /** @import role from  "../entities/player/role" */
 
 export default class TeamController {
-    /** @type {{red: Mesh[], blue: Mesh[]}} */
+    /** @type {{red: Player[], blue: Player[]}} */
     #teams = {
         red: [],
         blue: [],

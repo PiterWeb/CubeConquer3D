@@ -3,7 +3,7 @@ import { controllPlayer, renderPlayerBox } from "./entities/player/player.js";
 import { renderMap } from "./map/map.js";
 import setupCamera from "./camera.js";
 import { update as tweenUpdate } from "@tweenjs/tween.js";
-import setupGui from "./gui/gui.js";    
+import setupGui, { refreshGameGui } from "./gui/gui.js";    
 
 // Applying canvas default styles
 import './canvas/canvas.css'
@@ -29,17 +29,19 @@ export default function main() {
     const light = new HemisphereLight(0xffffbb, 0x080820, 0.2);
     scene.add(light);
 
-    const terrain = renderMap();
+    const terrain = renderMap(0.829387539471165);
 
     const camera = setupCamera();
 
-    function animate(t) {
+    setupGui();
+
+    function generalLoop(t) {
         renderer.render(scene, camera);
         tweenUpdate(t);
+        refreshGameGui();
     }
 
-    renderer.setAnimationLoop(animate);
+    renderer.setAnimationLoop(generalLoop);
 
-    setupGui();
 
 }

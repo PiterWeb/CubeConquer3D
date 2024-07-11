@@ -1,5 +1,6 @@
 @import url("./game-gui.css");
 @import url("./init-gui.css");
+@import url("./band-gui.css");
 
 @keyframes gui-appear {
     0% {
