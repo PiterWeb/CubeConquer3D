@@ -1,5 +1,4 @@
 import { Scene, WebGLRenderer, HemisphereLight} from "three";
-import { controllPlayer, renderPlayerBox } from "./entities/player/player.js";
 import { renderMap } from "./map/map.js";
 import setupCamera from "./camera.js";
 import { update as tweenUpdate } from "@tweenjs/tween.js";

@@ -1,7 +1,6 @@
 
 import TurnController from './turnController.js';
 import TeamController from './teamController.js';
-import { controllPlayer } from '../entities/player/player.js';
 
 export default class Game {
 
@@ -38,7 +37,7 @@ export default class Game {
         const redPlayers = this.teamController.RED;
 
         for (let redPlayer of redPlayers) {
-            await controllPlayer(redPlayer).catch(console.error);
+            await redPlayer.controll().catch(console.error);
         }
 
         this.turnController.nextTurn('blue');
@@ -46,7 +45,7 @@ export default class Game {
         const bluePlayers = this.teamController.BLUE;
 
         for (let bluePlayer of bluePlayers) {
-            await controllPlayer(bluePlayer).catch(console.error);
+            await bluePlayer.controll().catch(console.error);
         }
 
         this.turnController.nextRound();
