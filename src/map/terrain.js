@@ -1,4 +1,5 @@
 import { scene } from "../setup";
+import { createNoise2D } from 'simplex-noise';
 import { xOrigin, zOrigin, yOrigin } from "./map";
 import {
     BoxGeometry,
@@ -9,8 +10,8 @@ import {
     LineSegments,
 } from "three";
 
-// Expose the perlin noise function to the global scope
-import "./perlin_noise.js";
+import Alea from "alea";
+import { createNoise3D } from "simplex-noise";
 
 export default class Terrain {
     /** @type {number} **/
@@ -21,6 +22,12 @@ export default class Terrain {
 
     /** @type {number[][]} **/
     #map;
+
+    /** @type {import("simplex-noise").NoiseFunction2D} */
+    #noise2D;
+
+    /** @type {import("simplex-noise").NoiseFunction3D} */
+    #noise3D;
 
     /** @param {number} size **/
     constructor(size) {
@@ -42,12 +49,15 @@ export default class Terrain {
      * Render the terrain
      * @param {number} seed
      * **/
-    render(seed = Math.random()) {
+    render(seed = Math.random() * 200) {
         console.log("*** Terrain ***");
         console.log("Rendering terrain with seed: ", seed);
         console.log("****************");
 
-        noise.seed(seed);
+        const seedGen = Alea(seed)
+
+        this.#noise2D = createNoise2D(seedGen);
+        this.#noise3D = createNoise3D(seedGen);
 
         const terrain = new Mesh();
 
@@ -55,7 +65,7 @@ export default class Terrain {
             for (let j = 0; j < this.#size; j++) {
                 const x = xOrigin + Math.floor(this.#size / 2) - i;
                 const z = zOrigin + Math.floor(this.#size / 2) - j;
-                const y = yOrigin + Terrain.#randomY(i, j);
+                const y = yOrigin + this.#randomY(i, j);
 
                 // Skip the cubes below the origin
                 if (y < yOrigin) continue;
@@ -86,7 +96,7 @@ export default class Terrain {
 
                 // Generate Cubes below the current cube
                 for (let k = y; k >= 1; k--) {
-                    if (Terrain.#shouldBeACavity(x, yOrigin + y - k, z)) {
+                    if (this.#shouldBeACavity(x, yOrigin + y - k, z)) {
                         Terrain.#decorateCave(x, yOrigin + y - k, z);
                         // continue;
                     }
@@ -118,12 +128,12 @@ export default class Terrain {
      * @param {number} x
      * @param {number} z
      *  **/
-    static #randomY(x, z) {
-        // Generate a random number between -0.5 and 0.5 aproximately
-        const noiseValue = noise.perlin2(x / 15, z / 15);
+    #randomY(x, z) {
+        // Generate a random number between -1 and 1 aproximately
+        const noiseValue = this.#noise2D(x/10, z/10);
 
         // Round the number to the nearest integer between 0 and 4
-        const randomY = Math.round(Math.abs(noiseValue * 8) - 1);
+        const randomY = Math.round(Math.abs(noiseValue * 4) - 1);
 
         return randomY;
     }
@@ -133,11 +143,11 @@ export default class Terrain {
      * @param {number} y
      * @param {number} z
      *  **/
-    static #shouldBeACavity(x, y, z) {
-        const noiseValue = noise.perlin3(x / 15, y / 15, z / 15);
+    #shouldBeACavity(x, y, z) {
+        const noiseValue = this.#noise3D(x, y, z);
 
         // Round the number to the nearest integer between 0 and 1
-        const bool = Math.round(Math.abs(noiseValue * 4) - 2);
+        const bool = Math.round(Math.abs(noiseValue));
 
         return bool !== 1;
     }

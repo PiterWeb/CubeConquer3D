@@ -31,7 +31,7 @@ export const mapConstraints = {
 /**
  * @param {number} seed
  * **/
-export function renderMap(seed = Math.random()) {
+export function renderMap(seed = Math.random() * 200) {
     const geometry = new BoxGeometry(mapSize, 1, mapSize);
     const material = new MeshBasicMaterial({ color: "green" });
     const map = new Mesh(geometry, material);
