@@ -1,9 +1,8 @@
-import { Mesh } from "three";
 import { Player, renderPlayerBox } from "../entities/player/player";
 import { xOrigin, yOrigin, zOrigin } from "../map/map";
 
 /** @typedef {'red' | 'blue'} teamType */
-/** @import role from  "../entities/player/role" */
+/** @import {role as Role} from  "../entities/player/role" */
 
 export default class TeamController {
     /** @type {{red: Player[], blue: Player[]}} */
@@ -29,7 +28,7 @@ export default class TeamController {
     /** Generate the teams */
     generateTeams() {
 
-        const roles = /** @type {Array<role>} */ (Object.keys(this.#roleNumbers));
+        const roles = /** @type {Array<Role>} */ (Object.keys(this.#roleNumbers));
 
         for (const role of roles) {
             const redSpawn = this.#getSpawnPoint("red");

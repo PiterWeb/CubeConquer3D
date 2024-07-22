@@ -6,11 +6,13 @@ import {
     BackSide,
 } from "three";
 import { scene } from "../../setup";
-import { xOrigin, zOrigin, yOrigin } from "../../map/map";
+import { xOrigin, zOrigin, yOrigin, mapSize } from "../../map/map";
 import { roleColors, roleStats } from "./role";
 import { Tween } from "@tweenjs/tween.js";
 import controllPlayer from "./move";
 import attackMode from "./attack";
+import animate_spawn from "./animations/animate_spawn";
+import Terrain from "../../map/terrain";
 /**
  * @import {teamType} from "../../game/teamController"
  * @import { role as Role } from "./role"
@@ -125,7 +127,7 @@ export function renderPlayerBox(
     });
 
     player.position.x = x;
-    player.position.y = y;
+    player.position.y = y + 20; // The player is above the terrain to fall
     player.position.z = z;
 
     // Player can receive shadows
@@ -145,6 +147,15 @@ export function renderPlayerBox(
     player.add(meshEdges);
 
     scene.add(player);
+
+    // Normalize the position of the player
+    const normalizedX = Math.abs(Math.round(x));
+    const normalizedZ = Math.abs(Math.round(z));
+
+    // Get the Y position of the cube in the terrain plus one to spawn the player above the terrain
+    const spawnY = Terrain.getMap()[normalizedX][normalizedZ] + 1;
+
+    animate_spawn(player, spawnY, 750).start();
 
     return player;
 }

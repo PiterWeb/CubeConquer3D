@@ -15,41 +15,45 @@ import { createNoise3D } from "simplex-noise";
 
 export default class Terrain {
     /** @type {number} **/
-    #size;
+    static #size;
 
     /** @type {Mesh} **/
-    #terrainMesh;
+    static #terrainMesh;
 
     /** @type {number[][]} **/
-    #map;
+    static #map;
 
     /** @type {import("simplex-noise").NoiseFunction2D} */
-    #noise2D;
+    static #noise2D;
 
     /** @type {import("simplex-noise").NoiseFunction3D} */
-    #noise3D;
+    static #noise3D;
 
-    /** @param {number} size **/
-    constructor(size) {
-        this.#size = size;
-        this.#map = new Array(size)
-            .fill(null)
-            .map(() => new Array(size).fill(yOrigin));
-    }
-
-    getMap() {
+    static getMap() {
         return this.#map;
     }
 
-    getTerrainMesh() {
+    static getTerrainMesh() {
         return this.#terrainMesh;
+    }
+
+    static clear() {
+        const terrain = this.getTerrainMesh()
+        scene.remove(terrain);
     }
 
     /**
      * Render the terrain
+     * @param {number} size
      * @param {number} seed
      * **/
-    render(seed = Math.random() * 200) {
+    static render(size, seed = Math.random() * 200) {
+
+        this.#size = size;
+        this.#map = new Array(size)
+            .fill(null)
+            .map(() => new Array(size).fill(yOrigin));
+
         console.log("*** Terrain ***");
         console.log("Rendering terrain with seed: ", seed);
         console.log("****************");
@@ -128,7 +132,7 @@ export default class Terrain {
      * @param {number} x
      * @param {number} z
      *  **/
-    #randomY(x, z) {
+    static #randomY(x, z) {
         // Generate a random number between -1 and 1 aproximately
         const noiseValue = this.#noise2D(x/10, z/10);
 
@@ -143,7 +147,7 @@ export default class Terrain {
      * @param {number} y
      * @param {number} z
      *  **/
-    #shouldBeACavity(x, y, z) {
+    static #shouldBeACavity(x, y, z) {
         const noiseValue = this.#noise3D(x, y, z);
 
         // Round the number to the nearest integer between 0 and 1

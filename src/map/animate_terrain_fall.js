@@ -2,11 +2,10 @@ import Terrain from "./terrain";
 import { yOrigin } from "./map";
 import { Tween } from "@tweenjs/tween.js";
 
-/** @param {Terrain} terrain */
-export default function animateTerrainFall(terrain) {
-    terrain.getTerrainMesh().position.y = yOrigin + 20;
+export default function animateTerrainFall() {
+    Terrain.getTerrainMesh().position.y = yOrigin + 20;
 
-    new Tween({ y: terrain.getTerrainMesh().position.y })
+    new Tween({ y: Terrain.getTerrainMesh().position.y })
         .to(
             {
                 y: yOrigin - 0.5,
@@ -14,7 +13,7 @@ export default function animateTerrainFall(terrain) {
             1000
         )
         .onUpdate((object) => {
-            terrain.getTerrainMesh().position.y = object.y;
+            Terrain.getTerrainMesh().position.y = object.y;
         })
         .start();
 }

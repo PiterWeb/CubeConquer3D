@@ -27,7 +27,11 @@ export default class Game {
 
         this.#isStarted = true;
 
-        this.gameloop();
+        // Introduced delay to allow the animation of player spawn to finish
+        setTimeout(() => {
+            this.gameloop();
+        }, 1000);
+
     }
 
     static async gameloop() {

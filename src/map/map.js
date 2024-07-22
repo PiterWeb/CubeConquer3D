@@ -53,13 +53,11 @@ export function renderMap(seed = Math.random() * 200) {
     const grid = new Grid(mapSize);
     grid.render();
 
-    const terrain = new Terrain(mapSize);
-    terrain.render(seed);
+    Terrain.render(mapSize, seed);
 
     scene.add(map);
     scene.add(edgesMap);
 
-    animateTerrainFall(terrain);
+    animateTerrainFall();
 
-    return terrain;
 }
