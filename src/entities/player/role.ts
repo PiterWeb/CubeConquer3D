@@ -1,4 +1,4 @@
-type role = "tank" | "healer" | "dps" | "dead";
+export type role = "tank" | "healer" | "dps" | "dead";
 
 export const roleColors = {
     tank: "gray",
@@ -29,5 +29,3 @@ export const roleStats = {
         damage: 0
     }
 } as const;
-
-export default role;

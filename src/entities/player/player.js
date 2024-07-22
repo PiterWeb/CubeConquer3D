@@ -13,7 +13,7 @@ import controllPlayer from "./move";
 import attackMode from "./attack";
 /**
  * @import {teamType} from "../../game/teamController"
- * @import Role from "./role"
+ * @import { role as Role } from "./role"
  */
 
 /**
