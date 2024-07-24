@@ -28,7 +28,7 @@ export default function main() {
     const light = new HemisphereLight(0xffffbb, 0x080820, 0.2);
     scene.add(light);
 
-    const terrain = renderMap(134.3477409327731);
+    const terrain = renderMap();
 
     const camera = setupCamera();
 
