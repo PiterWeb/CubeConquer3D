@@ -1,8 +1,12 @@
-import { OrthographicCamera, DirectionalLight } from "three";
+import { OrthographicCamera, DirectionalLight, Vector3 } from "three";
 import { mapSize, zOrigin, xOrigin } from "./map/map.js";
 import { Tween } from "@tweenjs/tween.js";
 import Debouncer from "./debouncer.js";
 import { scene } from "./setup.js";
+import CameraShake from "./camera-shake.js";
+
+/** @type {OrthographicCamera} */
+let globalCamera;
 
 function setupCamera() {
     const aspect = window.innerWidth / window.innerHeight;
@@ -35,12 +39,18 @@ function setupCamera() {
     scene.add(light);
     scene.add(light.target);
 
+    globalCamera = camera;
+
     setupCameraRotation(camera, light);
 
     return camera;
 }
 
 export default setupCamera;
+
+export const CameraShakeController = CameraShake()
+
+export const ShakeCamera = (vecToAdd = new Vector3(0.1, 0, 0), milliseconds = 350, delay = 0) => setTimeout(() => {CameraShakeController.shake(globalCamera, vecToAdd, milliseconds)}, delay) 
 
 /**
  * @param {OrthographicCamera} camera

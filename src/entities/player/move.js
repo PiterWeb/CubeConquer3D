@@ -1,6 +1,6 @@
-import { BoxGeometry, EdgesGeometry, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial } from "three";
+import { BoxGeometry, EdgesGeometry, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial, Vector3 } from "three";
 import Debouncer from "../../debouncer";
-import { Rotation } from "../../camera";
+import { Rotation} from "../../camera";
 import { scene } from "../../setup";
 import { roleColors } from "./role";
 import { createPlayerSelector, removePlayerSelector } from "./player_selector";
@@ -10,6 +10,7 @@ import animate_down from "./animations/animate_down";
 import animate_right from "./animations/animate_right";
 import animate_up from "./animations/animate_up";
 import Raycast from "./raycast";
+import { ShakeCamera } from "../../camera";
 
 const animationDuration = 150;
 
@@ -21,6 +22,7 @@ const animationDuration = 150;
  * @param {'up' | 'down' | 'left' | 'right'} dir The direction of the movement
  * **/
 function animateMove(player, dir) {
+
     const playerRaycast = new Raycast(player);
 
     /** @param {boolean} fall */
@@ -32,6 +34,11 @@ function animateMove(player, dir) {
                 audio.remove();
             });
         }
+
+        if (fall) {
+            // ShakeCamera(new Vector3(0.1, 0, 0), 350)
+        }
+
         player.userData.moving = false;
     }
 
@@ -166,6 +173,18 @@ export default function controllPlayer(player) {
 
         window.addEventListener("keydown", toogleAttackMode);
 
+        function resetMove(event) {
+            console.log(event.key)
+            if (event.key === "Escape" && !tempBox.userData.moving) {
+                tempBox.position.set(
+                    player.position.x,
+                    player.position.y,
+                    player.position.z
+                );
+            }
+        }
+
+        window.addEventListener("keydown", resetMove)
 
         /**
          * @param {KeyboardEvent} event
@@ -182,10 +201,13 @@ export default function controllPlayer(player) {
                 window.removeEventListener("keydown", move);
                 window.removeEventListener("keydown", confirmMovement);
                 window.removeEventListener("keydown", toogleAttackMode);
+                window.removeEventListener("keydown", resetMove)
                 removePlayerSelector(player, selector);
                 resolve();
             }
         }
+
+
 
         // Detect spacebar to confirm the movement
         window.addEventListener("keydown", confirmMovement);

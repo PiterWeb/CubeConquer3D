@@ -1,6 +1,7 @@
 import { Mesh, Vector3 } from "three";
 import { Tween, Easing } from "@tweenjs/tween.js";
 import Raycast from "../raycast";
+import { ShakeCamera } from "../../../camera";
 
 /**
  * @param {Mesh} player
@@ -26,6 +27,7 @@ export default function animate_fall(player, animationDuration) {
 
             if (boxHaveToFall) {
                 animate_fall(player, animationDuration / 1.5);
+                ShakeCamera(new Vector3(0.1, 0, 0), 350, animationDuration)
                 return
             }
 
@@ -35,7 +37,7 @@ export default function animate_fall(player, animationDuration) {
                 audio.remove();
             });
 
-            
+
         })
         .start();
 }

@@ -65,9 +65,9 @@ export default class Raycast {
         //Check if there is a block below
         const directionToCheck = new Vector3(0, -1, 0);
 
-        return (
-            this.#cast(directionToCheck, distance, nextPlayerPosition) === null
-        );
+        const haveToFall = this.#cast(directionToCheck, distance, nextPlayerPosition) === null
+
+        return haveToFall
     }
 
     /**
@@ -87,10 +87,10 @@ export default class Raycast {
         return isTerrainForward && !isTerrainAbove;
     }
 
-     /**
-     * @param {Vector3} direction The direction to check if the player have to climb
-     * @param {number} distance Default value is 1
-     */
+    /**
+    * @param {Vector3} direction The direction to check if the player have to climb
+    * @param {number} distance Default value is 1
+    */
     boxHaveToColide(direction, distance = 1) {
         const terrainCords = this.#cast(direction, distance);
 
@@ -108,6 +108,9 @@ export default class Raycast {
             this.#cast(directionToCheck, 10, terrainCords) !== null;
 
         // if (!isTerrainBelowNextPosition) console.log("colide");
+
+        if (!isTerrainBelowNextPosition)
+            ShakeCamera(new Vector3(0.1, 0, 0), 350)
 
         return !isTerrainBelowNextPosition;
     }

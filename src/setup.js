@@ -1,11 +1,12 @@
 import { Scene, WebGLRenderer, HemisphereLight} from "three";
 import { renderMap } from "./map/map.js";
-import setupCamera from "./camera.js";
+import setupCamera, { CameraShakeController } from "./camera.js";
 import { update as tweenUpdate } from "@tweenjs/tween.js";
 import setupGui, { refreshGameGui } from "./gui/gui.js";    
 
 // Applying canvas default styles
 import './canvas/canvas.css'
+
 
 export const scene = new Scene();
 
@@ -35,6 +36,8 @@ export default function main() {
     setupGui();
 
     function generalLoop(t) {
+        CameraShakeController.update(camera);
+
         renderer.render(scene, camera);
         tweenUpdate(t);
         refreshGameGui();

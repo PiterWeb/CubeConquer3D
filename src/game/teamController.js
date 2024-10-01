@@ -21,8 +21,8 @@ export default class TeamController {
     /** @param {teamType} team */
     #getSpawnPoint(team) {
         return team === "red"
-            ? { x: xOrigin, y: yOrigin, z: zOrigin }
-            : { x: xOrigin - 4, y: yOrigin, z: zOrigin - 4 };
+            ? { x: xOrigin + 6, y: yOrigin, z: zOrigin + 6 }
+            : { x: xOrigin - 6, y: yOrigin, z: zOrigin - 6 };
     }
 
     /** Generate the teams */

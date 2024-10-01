@@ -1,61 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>CubeConquer 3D</title>
-        <link rel="stylesheet" href="./src/gui/gui.css" />
-    </head>
-    <body>
-        <section id="gui">
-            <main id="init-gui">
-                <header id="init-gui-header">
-                    <h1>Cube Conquer 3D</h1>
-                    <button id="btn-init" form="gui">Start Now</button>
+
+<head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CubeConquer 3D</title>
+    <link rel="stylesheet" href="./src/gui/gui.css" />
+</head>
+
+<body>
+    <section id="gui">
+        <main id="init-gui">
+            <header id="init-gui-header">
+                <h1>Cube Conquer 3D</h1>
+                <button id="btn-init" form="gui">Start Now</button>
+            </header>
+            <section id="init-gui-controls">
+                <h2>Controls</h2>
+                <div class="controls">
+                    <h3>Movement</h3>
+                    <kbd data-selection="white">W</kbd>
+                    <kbd>A</kbd>
+                    <kbd>S</kbd>
+                    <kbd>D</kbd>
+                </div>
+                <div class="controls">
+                    <h3>Camera</h3>
+                    <kbd>Left click</kbd>
+                </div>
+                <div class="controls">
+                    <h3>End turn</h3>
+                    <kbd>SpaceBar</kbd>
+                </div>
+                <div class="controls">
+                    <h3>Reset Move</h3>
+                    <kbd>Esc</kbd>
+                </div>
+                <div class="controls">
+                    <h3>Toogle Attack/Move</h3>
+                    <kbd>⇧</kbd>
+                </div>
+            </section>
+        </main>
+        <aside id="game-gui">
+            <div id="left-up">
+                <header class="band_header" id="band_header_blue">
+                    <img class="band_img" src="/assets/capitalism.svg" />
+                    <h3>Capitalism</h3>
                 </header>
-                <section id="init-gui-controls">
-                    <h2>Controls</h2>
-                    <div class="controls">
-                        <h3>Movement</h3>
-                        <kbd data-selection="white">W</kbd>
-                        <kbd>A</kbd>
-                        <kbd>S</kbd>
-                        <kbd>D</kbd>
-                    </div>
-                    <div class="controls">
-                        <h3>Camera</h3>
-                        <kbd>Left click</kbd>
-                    </div>
-                    <div class="controls">
-                        <h3>End turn</h3>
-                        <kbd>SpaceBar</kbd>
-                    </div>
-                </section>
-            </main>
-            <aside id="game-gui">
-                <div id="left-up">
-                    <header class="band_header" id="band_header_blue">
-                        <img class="band_img" src="/assets/capitalism.svg" />
-                        <h3>Capitalism</h3>
-                    </header>
-                    <div class="units" id="blue_units"></div>
-                </div>
-                <div id="right-up">
-                    <header class="band_header" id="band_header_red">
-                        <h3>Communism</h3>
-                        <img class="band_img" src="/assets/communism.svg" />
-                    </header>
-                    <div class="units" id="red_units"></div>
-                </div>
-                <div id="left-down">
-                    <h3>Placeholder</h3>
-                </div>
-                <div id="right-down">
-                    <h3>Placeholder</h3>
-                </div>
-            </aside>
-        </section>
-        <script type="module" src="/main.js"></script>
-    </body>
+                <div class="units" id="blue_units"></div>
+            </div>
+            <div id="right-up">
+                <header class="band_header" id="band_header_red">
+                    <h3>Communism</h3>
+                    <img class="band_img" src="/assets/communism.svg" />
+                </header>
+                <div class="units" id="red_units"></div>
+            </div>
+            <div id="left-down">
+                <h3>Placeholder</h3>
+            </div>
+            <div id="right-down">
+                <h3>Placeholder</h3>
+            </div>
+        </aside>
+    </section>
+    <script type="module" src="/main.js"></script>
+</body>
+
 </html>
