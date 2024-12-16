@@ -11,7 +11,11 @@ import Terrain from "./terrain";
 import Grid from "./map_grid";
 import animateTerrainFall from "./animate_terrain_fall";
 
-export const mapSize = 15;
+/** Map size must be not divisible by 2
+ * @example 31
+ * @example 15
+*/
+export const mapSize = 31;
 
 export const xOrigin = -mapSize / 2;
 export const zOrigin = -mapSize / 2;
@@ -33,12 +37,12 @@ export const mapConstraints = {
  * **/
 export function renderMap(seed = Math.random() * 200) {
     const geometry = new BoxGeometry(mapSize, 1, mapSize);
-    const material = new MeshBasicMaterial({ color: "green" });
+    const material = new MeshBasicMaterial({ color: "brown" });
     const map = new Mesh(geometry, material);
 
     // Show the edges of the map
     const edges = new EdgesGeometry(geometry);
-    const line = new LineBasicMaterial({ color: "black" });
+    const line = new LineBasicMaterial({ color: "white" });
     const edgesMap = new LineSegments(edges, line);
 
     map.position.x = xOrigin;

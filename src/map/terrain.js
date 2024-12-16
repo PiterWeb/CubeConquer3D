@@ -11,7 +11,7 @@ import {
 } from "three";
 
 import Alea from "alea";
-import { createNoise3D } from "simplex-noise";
+import { ZoneCube } from "../entities/cube/zone_cube";
 
 export default class Terrain {
     /** @type {number} **/
@@ -26,9 +26,15 @@ export default class Terrain {
     /** @type {import("simplex-noise").NoiseFunction2D} */
     static #noise2D;
 
-    /** @type {import("simplex-noise").NoiseFunction3D} */
-    static #noise3D;
+    // /** @type {import("simplex-noise").NoiseFunction3D} */
+    // static #noise3D;
+    
+    /** @type {Array<ZoneCube>} */
+    static #zones = this.#generateZoneArray();
 
+    /** @type {Array<{x: number, z: number, zone: ZoneCube}>} */
+    static #zoneSeeds = this.#generateRandomSeeds();
+    
     static getMap() {
         return this.#map;
     }
@@ -61,7 +67,7 @@ export default class Terrain {
         const seedGen = Alea(seed)
 
         this.#noise2D = createNoise2D(seedGen);
-        this.#noise3D = createNoise3D(seedGen);
+        // this.#noise3D = createNoise3D(seedGen);
 
         const terrain = new Mesh();
 
@@ -78,7 +84,10 @@ export default class Terrain {
                 this.#map[i][j] = y;
 
                 const geometry = new BoxGeometry(1, 1, 1);
-                const material = new MeshPhongMaterial({ color: "white" });
+                const zone = this.#getZone(x, z)
+                const material = new MeshPhongMaterial({ color: zone.color });
+
+                /** @type {ZoneCube}  */
                 const cube = new Mesh(geometry, material);
                 cube.name = "terrain";
 
@@ -89,10 +98,12 @@ export default class Terrain {
                 cube.position.z = z;
                 cube.position.y = y;
 
+                cube.userData = zone
+
                 // Create the edges of the cube (can be reused for all cubes)
                 const edges = new EdgesGeometry(geometry);
                 const line = new LineBasicMaterial({
-                    color: "black",
+                    color: zone.border_color ?? "black",
                     linewidth: 3,
                     precision: "highp",
                 });
@@ -100,13 +111,9 @@ export default class Terrain {
 
                 // Generate Cubes below the current cube
                 for (let k = y; k >= 1; k--) {
-                    if (this.#shouldBeACavity(x, yOrigin + y - k, z)) {
-                        Terrain.#decorateCave(x, yOrigin + y - k, z);
-                        // continue;
-                    }
 
                     const geometry = new BoxGeometry(1, 1, 1);
-                    const material = new MeshPhongMaterial({ color: "white" });
+                    const material = new MeshPhongMaterial({ color: zone.color });
                     const belowCube = new Mesh(geometry, material);
                     const edgesCube = new LineSegments(edges, line);
 
@@ -134,7 +141,7 @@ export default class Terrain {
      *  **/
     static #randomY(x, z) {
         // Generate a random number between -1 and 1 aproximately
-        const noiseValue = this.#noise2D(x/10, z/10);
+        const noiseValue = this.#noise2D(x / 10, z / 10);
 
         // Round the number to the nearest integer between 0 and 4
         const randomY = Math.round(Math.abs(noiseValue * 4) - 1);
@@ -142,21 +149,93 @@ export default class Terrain {
         return randomY;
     }
 
+
+
     /**
      * @param {number} x
-     * @param {number} y
      * @param {number} z
+     * @returns {ZoneCube} 
      *  **/
-    static #shouldBeACavity(x, y, z) {
-        const noiseValue = this.#noise3D(x, y, z);
+    static #getZone(x, z) {
 
-        // Round the number to the nearest integer between 0 and 1
-        const bool = Math.round(Math.abs(noiseValue));
+        // 1. Define Seeds (fixed points in the space)
+        const seeds = this.#zoneSeeds
 
-        return bool !== 1;
+        let nearestSeed = null;
+        let minDistance = Infinity;
+
+        // 2. Calculate distance to seeds
+        for (const seed of seeds) {
+            const dx = x - seed.x;
+            const dz = z - seed.z;
+
+            // Euclidean distance 
+            const distance = Math.sqrt(dx * dx + dz * dz);
+
+            // Verify if this seed is the nearest
+            if (distance < minDistance) {
+                minDistance = distance;
+                nearestSeed = seed;
+            }
+        }
+
+        // 3. Apply optional noise to make the zones aleatory
+        const scale = 0.05; // Adjust noise scale
+        const noiseValue = this.#noise2D(x * scale, z * scale);
+
+        // Softening transition
+        const threshold = 0.3; // Noise treshold
+        if (noiseValue > threshold) {
+            // Select the new nearestSeed based on the previous seed and the total number of seeds
+            const index = (seeds.indexOf(nearestSeed) + 1) % seeds.length;
+            nearestSeed = seeds[index];
+        }
+
+        // 4. Return the zone
+        return nearestSeed.zone;
+
     }
 
-    static #decorateCave(x, y, z) {
-        // TODO
+
+    /**
+     * Generate aleatory coordinates for the zone's seeds
+     * @returns {Array<{x: number, z: number, zone: ZoneCube}>} Array of aleatory seeds.
+     */
+    static #generateRandomSeeds() {
+        const numSeeds = this.#zones.length; // Number of seeds
+        const range = 50; // Range for x and z coords
+        const seeds = [];
+
+        for (let i = 0; i < numSeeds; i++) {
+            const randomX = Math.floor(Math.random() * (2 * range + 1)) - range; // Aleatory between -50 and 50
+            const randomZ = Math.floor(Math.random() * (2 * range + 1)) - range;
+
+            seeds.push({ x: randomX, z: randomZ, zone: this.#zones[i] });
+        }
+
+        return seeds;
     }
+
+    /** @returns {Array<ZoneCube>} */
+    static #generateZoneArray() {
+
+        const china = { name: "china", color: 'red' }
+        const israel = { name: "israel", color: 'lightblue' }
+        const georgia = { name: "georgia", color: 'white' }
+        const alemania = { name: "alemania", color: 'black', border_color: 'white' }
+    
+        const zones = []
+    
+        zones.push(china)
+    
+        zones.push(israel)
+    
+        zones.push(georgia)
+    
+        zones.push(alemania)
+    
+        return zones
+    
+    }
+
 }
