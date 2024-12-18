@@ -2,7 +2,7 @@ import { Player, renderPlayerBox } from "../entities/player/player";
 import { xOrigin, yOrigin, zOrigin } from "../map/map";
 
 /** @typedef {'red' | 'blue'} teamType */
-/** @import {role as Role} from  "../entities/player/role" */
+/** @import {color as Role} from  "../entities/player/color" */
 
 export default class TeamController {
     /** @type {{red: Player[], blue: Player[]}} */
@@ -11,10 +11,10 @@ export default class TeamController {
         blue: [],
     };
 
-    #roleNumbers = {
-        dps: 1,
-        tank: 1,
-        healer: 1,
+    #colorNumbers = {
+        gray: 1,
+        orange: 1,
+        green: 1,
     };
 
     /** Get a semi random spawn point for members of different teams */
@@ -28,14 +28,14 @@ export default class TeamController {
     /** Generate the teams */
     generateTeams() {
 
-        const roles = /** @type {Array<Role>} */ (Object.keys(this.#roleNumbers));
+        const colors = /** @type {Array<Role>} */ (Object.keys(this.#colorNumbers));
 
-        for (const role of roles) {
+        for (const color of colors) {
             const redSpawn = this.#getSpawnPoint("red");
             const blueSpawn = this.#getSpawnPoint("blue");
 
-            const redBox = renderPlayerBox("red", role, redSpawn);
-            const blueBox = renderPlayerBox("blue", role, blueSpawn);
+            const redBox = renderPlayerBox("red", color, redSpawn);
+            const blueBox = renderPlayerBox("blue", color, blueSpawn);
 
             this.#teams.red.push(redBox);
             this.#teams.blue.push(blueBox);

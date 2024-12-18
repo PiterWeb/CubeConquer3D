@@ -6,8 +6,7 @@ import {
     BackSide,
 } from "three";
 import { scene } from "../../setup";
-import { xOrigin, zOrigin, yOrigin, mapSize } from "../../map/map";
-import { roleColors, roleStats } from "./role";
+import { xOrigin, zOrigin, yOrigin } from "../../map/map";
 import { Tween } from "@tweenjs/tween.js";
 import controllPlayer from "./move";
 import attackMode from "./attack";
@@ -15,7 +14,7 @@ import animate_spawn from "./animations/animate_spawn";
 import Terrain from "../../map/terrain";
 /**
  * @import {teamType} from "../../game/teamController"
- * @import { role as Role } from "./role"
+ * @import { color as Color } from "./color"
  */
 
 /**
@@ -23,12 +22,16 @@ import Terrain from "../../map/terrain";
  * @extends Mesh
  */
 export class Player extends Mesh {
+
+    static #MAX_HEALTH = 250;
+
     /**
      * @param {BoxGeometry} geometry
      * @param {MeshPhongMaterial} material
      * @param {Object} userData
+     * @param {boolean} userData.dead
      * @param {teamType} userData.team
-     * @param {Role} userData.role
+     * @param {Color} userData.color
      * @param {boolean} userData.moving
      * @param {Tween?} userData.selector_animation
      * @param {number?} userData.current_health
@@ -38,7 +41,7 @@ export class Player extends Mesh {
         super(geometry, material);
         this.userData = userData;
         if (this.userData.current_health === null) {
-            this.userData.current_health = roleStats[userData.role].health;
+            this.userData.current_health = Player.#MAX_HEALTH;
         }
     }
 
@@ -81,14 +84,15 @@ export class Player extends Mesh {
         if (!this.userData.current_health) return;
         this.userData.current_health += heal;
         if (
-            this.userData.current_health > roleStats[this.userData.role].health
+            this.userData.current_health > Player.#MAX_HEALTH
         ) {
-            this.userData.current_health = roleStats[this.userData.role].health;
+            this.userData.current_health = Player.#MAX_HEALTH;
         }
     }
 
     #death() {
-        this.userData.role = "dead";
+        this.userData.color = "transparent";
+        this.userData.dead = true;
         console.log("Player is dead");
     }
 }
@@ -96,7 +100,7 @@ export class Player extends Mesh {
 /**
  *  Render a box in the scene
  *  @param {teamType} team The team color
- *  @param {Role} role The role of the player
+ *  @param {Color} color The role of the player
  *  @param {Object} position The position of the box
  *  @param {number} position.x The x position of the box
  *  @param {number} position.y The y position of the box
@@ -105,7 +109,7 @@ export class Player extends Mesh {
  **/
 export function renderPlayerBox(
     team = "blue",
-    role = "dps",
+    color = "red",
     { x = xOrigin, y = yOrigin, z = zOrigin } = {
         x: xOrigin,
         y: yOrigin,
@@ -119,11 +123,12 @@ export function renderPlayerBox(
 
     const player = new Player(geometry, material, {
         team,
-        role,
+        color,
         moving: false,
         selector_animation: null,
         current_health: null,
         attack_mode: false,
+        dead: false
     });
 
     player.position.x = x;
@@ -137,7 +142,7 @@ export function renderPlayerBox(
     const edges = new BoxGeometry(1.1, 1.1, 1.1);
 
     const materialEdges = new MeshBasicMaterial({
-        color: roleColors[role],
+        color,
         side: BackSide,
     });
 

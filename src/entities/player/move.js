@@ -1,8 +1,7 @@
-import { BoxGeometry, EdgesGeometry, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial, Vector3 } from "three";
+import { BoxGeometry, EdgesGeometry, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial } from "three";
 import Debouncer from "../../debouncer";
 import { Rotation} from "../../camera";
 import { scene } from "../../setup";
-import { roleColors } from "./role";
 import { createPlayerSelector, removePlayerSelector } from "./player_selector";
 import { Player } from "./player";
 import animate_left from "./animations/animate_left";
@@ -114,7 +113,7 @@ export default function controllPlayer(player) {
 
         const tempEdges = new EdgesGeometry(geometry);
         const line = new LineBasicMaterial({
-            color: roleColors[player.userData.role],
+            color: player.userData.color,
         });
         const tempBoxEdges = new LineSegments(tempEdges, line);
 

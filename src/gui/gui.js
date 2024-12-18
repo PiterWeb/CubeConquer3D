@@ -37,7 +37,7 @@ function getTableUnits(units) {
         ${units
             .map(
                 (unit) =>
-                    `<li>${unit.userData.role}: ${unit.userData.current_health}</li>`
+                    `<li>${unit.userData.color}: ${unit.userData.current_health}</li>`
             )
             .join("")}
         </ul>
