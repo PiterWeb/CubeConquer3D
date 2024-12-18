@@ -10,7 +10,6 @@ import animate_down from "./animations/animate_down";
 import animate_right from "./animations/animate_right";
 import animate_up from "./animations/animate_up";
 import Raycast from "./raycast";
-import { ShakeCamera } from "../../camera";
 
 const animationDuration = 150;
 
@@ -33,10 +32,6 @@ function animateMove(player, dir) {
             audio.play().then(() => {
                 audio.remove();
             });
-        }
-
-        if (fall) {
-            // ShakeCamera(new Vector3(0.1, 0, 0), 350)
         }
 
         player.userData.moving = false;

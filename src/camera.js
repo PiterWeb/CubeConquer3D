@@ -50,7 +50,7 @@ export default setupCamera;
 
 export const CameraShakeController = CameraShake()
 
-export const ShakeCamera = (vecToAdd = new Vector3(0.1, 0, 0), milliseconds = 350, delay = 0) => setTimeout(() => {CameraShakeController.shake(globalCamera, vecToAdd, milliseconds)}, delay) 
+export const ShakeCamera = (vecToAdd = new Vector3(0.5, 0, 0), milliseconds = 350, delay = 0) => setTimeout(() => {CameraShakeController.shake(globalCamera, vecToAdd, milliseconds)}, delay) 
 
 /**
  * @param {OrthographicCamera} camera

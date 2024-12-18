@@ -27,7 +27,7 @@ export default function animate_fall(player, animationDuration) {
 
             if (boxHaveToFall) {
                 animate_fall(player, animationDuration / 1.5);
-                ShakeCamera(new Vector3(0.1, 0, 0), 350, animationDuration)
+                ShakeCamera(new Vector3(0.5, 0, 0), 350, animationDuration / 1.5)
                 return
             }
 

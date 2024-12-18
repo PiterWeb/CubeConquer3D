@@ -107,10 +107,8 @@ export default class Raycast {
         const isTerrainBelowNextPosition =
             this.#cast(directionToCheck, 10, terrainCords) !== null;
 
-        // if (!isTerrainBelowNextPosition) console.log("colide");
-
-        if (!isTerrainBelowNextPosition)
-            ShakeCamera(new Vector3(0.1, 0, 0), 350)
+        // if (!isTerrainBelowNextPosition)
+        //     ShakeCamera()
 
         return !isTerrainBelowNextPosition;
     }
