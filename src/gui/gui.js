@@ -1,6 +1,6 @@
-import animateGuiVanish from "./animate_gui_vanish";
-import Game from "../game/game";
-import { Player } from "../entities/player/player";
+import animateGuiVanish from "@/gui/animate_gui_vanish";
+import Game from "@/game/game";
+import { Player } from "@player/player";
 
 export default function setupGui() {
     const btnInit = document.getElementById("btn-init");

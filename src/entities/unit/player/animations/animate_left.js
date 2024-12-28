@@ -1,9 +1,9 @@
 import { Mesh, Vector3 } from "three";
-import { mapConstraints } from "../../../map/map";
-import Raycast from "../raycast";
+import { mapConstraints } from "@/map/map";
+import Raycast from "@player/raycast";
 import { Tween } from "@tweenjs/tween.js";
-import animate_climb from "./animate_climb";
-import animate_fall from "./animate_fall";
+import animate_climb from "@player/animations/animate_climb";
+import animate_fall from "@player/animations/animate_fall";
 
 /**
  * @param {Mesh} player
@@ -12,16 +12,16 @@ import animate_fall from "./animate_fall";
  * @param {() => void} cllbkStart
  * @param {(fall: boolean) => void} cllbkEnd
  */
-export default function animate_down(
+export default function animate_left(
     player,
     playerRaycast,
     animationDuration,
     cllbkStart = () => {},
     cllbkEnd = () => {}
 ) {
-    if (player.position.z >= mapConstraints.z.max) return;
+    if (player.position.x <= mapConstraints.x.min) return;
 
-    const direction = new Vector3(0, 0, 1);
+    const direction = new Vector3(-1, 0, 0);
 
     const boxHaveToClimb = playerRaycast.boxHaveToClimb(direction);
     const boxHaveToFall = playerRaycast.boxHaveToFall(direction);
@@ -35,22 +35,22 @@ export default function animate_down(
         return;
     }
 
-    new Tween({ x_rotation: player.rotation.x, z: player.position.z })
+    new Tween({ z_rotation: player.rotation.z, x: player.position.x })
         .to(
             {
-                x_rotation: player.rotation.x + Math.PI / 2,
-                z: player.position.z + 1,
+                z_rotation: player.rotation.z + Math.PI / 2,
+                x: player.position.x - 1,
             },
             animationDuration
         )
         .onUpdate((object) => {
-            player.rotation.x = object.x_rotation;
-            player.position.z = object.z;
+            player.rotation.z = object.z_rotation;
+            player.position.x = object.x;
         })
         .start()
         .onStart(() => cllbkStart())
         .onComplete(() => {
-            player.rotation.x = 0;
+            player.rotation.z = 0;
             const fall = boxHaveToFall !== false;
             cllbkEnd(fall);
         });

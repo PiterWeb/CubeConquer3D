@@ -1,5 +1,5 @@
-import Game from "../../game/game";
-import { Player } from "./player";
+import Game from "@/game/game";
+import { Player } from "@player/player";
 
 /**
  * Attack mode

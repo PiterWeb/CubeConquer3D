@@ -1,8 +1,8 @@
-import { Player, renderPlayerBox } from "../entities/player/player";
-import { xOrigin, yOrigin, zOrigin } from "../map/map";
+import { Player, renderPlayerBox } from "@player/player";
+import { xOrigin, yOrigin, zOrigin } from "@/map/map";
 
 /** @typedef {'red' | 'blue'} teamType */
-/** @import {color as Role} from  "../entities/player/color" */
+/** @import {color as Role} from "@/entities/unit/color" */
 
 export default class TeamController {
     /** @type {{red: Player[], blue: Player[]}} */

@@ -1,7 +1,7 @@
 import { Mesh, Vector3 } from "three";
 import { Tween, Easing } from "@tweenjs/tween.js";
-import Raycast from "../raycast";
-import { ShakeCamera } from "../../../camera";
+import Raycast from "@player/raycast";
+import { ShakeCamera } from "@/camera";
 
 /**
  * @param {Mesh} player

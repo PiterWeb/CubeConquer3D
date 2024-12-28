@@ -1,0 +1,13 @@
+{
+	"compilerOptions": {
+		"strict": true,
+		"paths": {
+			"@/*": ["src/*"],
+            "@player/*": ["src/entities/unit/player/*"],
+		},
+        "baseUrl": ".",
+		"target": "ESNext",
+		"checkJs": true
+	},
+	"exclude": ["node_modules"],
+}

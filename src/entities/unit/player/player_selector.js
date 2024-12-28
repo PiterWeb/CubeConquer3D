@@ -6,8 +6,8 @@ import {
     EdgesGeometry,
     LineBasicMaterial,
 } from "three";
-import { Player } from "./player";
-import animate_selector from "./animations/animate_selector";
+import { Player } from "@player/player";
+import animate_selector from "@player/animations/animate_selector";
 
 /** @param {Player} player */
 export function createPlayerSelector(player) {

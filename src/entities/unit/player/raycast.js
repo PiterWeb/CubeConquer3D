@@ -1,6 +1,6 @@
 import { Mesh, Raycaster, Vector3 } from "three";
-import { scene } from "../../setup";
-import { yOrigin } from "../../map/map";
+import { scene } from "../../../setup";
+import { yOrigin } from "../../../map/map";
 
 /**
  * @class Raycast

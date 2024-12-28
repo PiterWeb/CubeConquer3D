@@ -1,14 +1,14 @@
 import { BoxGeometry, EdgesGeometry, LineBasicMaterial, LineSegments, Mesh, MeshBasicMaterial } from "three";
-import Debouncer from "../../debouncer";
-import { Rotation} from "../../camera";
-import { scene } from "../../setup";
-import { createPlayerSelector, removePlayerSelector } from "./player_selector";
-import { Player } from "./player";
-import animate_left from "./animations/animate_left";
-import animate_down from "./animations/animate_down";
-import animate_right from "./animations/animate_right";
-import animate_up from "./animations/animate_up";
-import Raycast from "./raycast";
+import Debouncer from "@/debouncer";
+import { Rotation } from "@/camera";
+import { scene } from "@/setup";
+import { createPlayerSelector, removePlayerSelector } from "@player/player_selector";
+import { Player } from "@player/player";
+import animate_left from "@player/animations/animate_left";
+import animate_down from "@player/animations/animate_down";
+import animate_right from "@player/animations/animate_right";
+import animate_up from "@player/animations/animate_up";
+import Raycast from "@player/raycast";
 
 const animationDuration = 150;
 
@@ -167,6 +167,9 @@ export default function controllPlayer(player) {
 
         window.addEventListener("keydown", toogleAttackMode);
 
+        /** 
+         * @param {KeyboardEvent} event 
+         */
         function resetMove(event) {
             console.log(event.key)
             if (event.key === "Escape" && !tempBox.userData.moving) {

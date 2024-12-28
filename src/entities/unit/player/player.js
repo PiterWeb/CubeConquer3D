@@ -1,3 +1,4 @@
+//@ts-check
 import {
     BoxGeometry,
     Mesh,
@@ -5,21 +6,23 @@ import {
     MeshBasicMaterial,
     BackSide,
 } from "three";
-import { scene } from "../../setup";
-import { xOrigin, zOrigin, yOrigin } from "../../map/map";
+import { scene } from "@/setup";
+import { xOrigin, zOrigin, yOrigin } from "@/map/map";
 import { Tween } from "@tweenjs/tween.js";
-import controllPlayer from "./move";
-import attackMode from "./attack";
-import animate_spawn from "./animations/animate_spawn";
-import Terrain from "../../map/terrain";
+import controllPlayer from "@player/move";
+import attackMode from "@player/attack";
+import animate_spawn from "@player/animations/animate_spawn";
+import Terrain from "@/map/terrain";
 /**
- * @import {teamType} from "../../game/teamController"
- * @import { color as Color } from "./color"
+ * @import {teamType} from "@/game/teamController"
+ * @import { color as Color } from "@/entities/unit/color"
+ * @import IAttackble from "@/entities/interfaces/IAttackable"
  */
 
 /**
  * @class Player - A class to represent a player in the scene
  * @extends Mesh
+ * @implements {IAttackble}
  */
 export class Player extends Mesh {
 
@@ -33,7 +36,7 @@ export class Player extends Mesh {
      * @param {teamType} userData.team
      * @param {Color} userData.color
      * @param {boolean} userData.moving
-     * @param {Tween?} userData.selector_animation
+     * @param {Tween<any>?} userData.selector_animation
      * @param {number?} userData.current_health
      * @param {boolean} userData.attack_mode
      */
@@ -43,6 +46,36 @@ export class Player extends Mesh {
         if (this.userData.current_health === null) {
             this.userData.current_health = Player.#MAX_HEALTH;
         }
+    }
+    /**
+     * @param {number} healthCure
+     */
+    cure(healthCure) {
+        throw new Error("Method not implemented.");
+    }
+    get health() {
+        return 0
+        throw new Error("Method not implemented.");
+    }
+
+    /**
+     * @param {number} newHealth
+     */
+    set health(newHealth) {
+        throw new Error("Method not implemented.");
+    }
+
+    isDead() {
+        return false
+        throw new Error("Method not implemented.");
+    }
+
+    /**
+     * @param {string} targetID
+     * @param {number} damage
+     */
+    attack(targetID, damage) {
+        throw new Error("Method not implemented.");
     }
 
     /**
@@ -109,6 +142,7 @@ export class Player extends Mesh {
  **/
 export function renderPlayerBox(
     team = "blue",
+    // @ts-ignore
     color = "red",
     { x = xOrigin, y = yOrigin, z = zOrigin } = {
         x: xOrigin,
